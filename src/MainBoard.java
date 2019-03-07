@@ -15,6 +15,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JSeparator;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MainBoard {
 
@@ -29,11 +31,7 @@ public class MainBoard {
 				try {
 					MainBoard window = new MainBoard();
 					window.frame.setVisible(true);
-					JFileChooser fd = new JFileChooser();
-					//fd.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-					fd.showOpenDialog(null);
-					File f = fd.getSelectedFile();
-					if(f != null){}
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -57,17 +55,29 @@ public class MainBoard {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(31, 85, 79, 23);
+		String[] JCBList1 = { "华为", "中兴", "爱立信" ,"诺基亚","贝尔"};
+		JComboBox comboBox = new JComboBox(JCBList1);
+		comboBox.setBounds(31, 85, 79, 23);		
 		frame.getContentPane().add(comboBox);
 		
 		JButton btnNewButton = new JButton("\u5BFC\u5165HSS\u6570\u636E");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fd = new JFileChooser();
+				//fd.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				fd.setMultiSelectionEnabled(true);
+				fd.showOpenDialog(null);
+				File f = fd.getSelectedFile();
+				
+				if(f != null){}
+			}
+		});
 		btnNewButton.setBounds(120, 85, 113, 23);
 		frame.getContentPane().add(btnNewButton);
 		
 		JLabel lblHss = new JLabel("HSS:");
 		lblHss.setFont(new Font("微软雅黑", Font.BOLD, 17));
-		lblHss.setBounds(31, 41, 54, 15);
+		lblHss.setBounds(31, 10, 54, 15);
 		frame.getContentPane().add(lblHss);
 		
 		JButton btnNewButton_1 = new JButton("\u793A\u4F8B\u6587\u4EF6");
@@ -83,7 +93,7 @@ public class MainBoard {
 		lblAs.setBounds(31, 143, 54, 15);
 		frame.getContentPane().add(lblAs);
 		
-		JComboBox comboBox_1 = new JComboBox();
+		JComboBox comboBox_1 = new JComboBox(JCBList1);
 		comboBox_1.setBounds(31, 168, 79, 23);
 		frame.getContentPane().add(comboBox_1);
 		
@@ -104,7 +114,7 @@ public class MainBoard {
 		lblEnumdns.setBounds(31, 251, 152, 15);
 		frame.getContentPane().add(lblEnumdns);
 		
-		JComboBox comboBox_2 = new JComboBox();
+		JComboBox comboBox_2 = new JComboBox(JCBList1);
 		comboBox_2.setBounds(31, 276, 79, 23);
 		frame.getContentPane().add(comboBox_2);
 		
