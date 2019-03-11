@@ -16,6 +16,7 @@ import java.sql.*;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -24,7 +25,10 @@ import java.util.Properties;
 import java.awt.Color;
 
 public class MainBoard {
-
+	Properties p=new Properties();
+	database qSQL=new database();
+	FileOutputStream oFile=null;
+	String RUN_path;
 	private JFrame frame;
 
 	/**
@@ -59,8 +63,20 @@ public class MainBoard {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		Properties p=new Properties();
-		database qSQL=new database();
+		
+//		Properties p=new Properties();
+//		database qSQL=new database();
+		try {
+			oFile=new FileOutputStream(new File("config.properties"),true);
+			
+			p.load(new FileInputStream(new File("config.properties")));
+			RUN_path=p.getProperty("RUNPATH");
+			
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 528, 394);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -157,10 +173,22 @@ public class MainBoard {
 		label_1.setFont(new Font("Î¢ÈíÑÅºÚ", Font.BOLD, 12));
 		label_1.setBounds(138, 149, 364, 15);
 		frame.getContentPane().add(label_1);
+		
+		JButton btnNewButton_3 = new JButton("New button");
+		btnNewButton_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				qSQL.CountItems();
+			}
+		});
+		btnNewButton_3.setBounds(10, 291, 93, 23);
+		frame.getContentPane().add(btnNewButton_3);
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ArrayList MSISDN=new ArrayList();
 				JFileChooser fd = new JFileChooser();
+				RUN_path=p.getProperty("RUNPATH");
+				System.out.println(RUN_path);
+				if(RUN_path!=null) fd.setCurrentDirectory(new File(RUN_path));
 				if(fd.showOpenDialog(null)==fd.APPROVE_OPTION) {
 				File f = fd.getSelectedFile();
 				if(f != null){
@@ -227,12 +255,21 @@ public class MainBoard {
 				}
 				
 				}
+				p.setProperty("RUNPATH", fd.getCurrentDirectory().toString());
+				try {
+					p.store(oFile, "config");
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ArrayList MSISDN=new ArrayList();
 				JFileChooser fd = new JFileChooser();
+				RUN_path=p.getProperty("RUNPATH");
+				if(RUN_path!="") fd.setCurrentDirectory(new File(RUN_path));
 				if(fd.showOpenDialog(null)==fd.APPROVE_OPTION) {
 				File f = fd.getSelectedFile();
 				if(f != null){
@@ -299,8 +336,14 @@ public class MainBoard {
 				}
 				
 				}
+				p.setProperty("RUNPATH", fd.getCurrentDirectory().toString());
+				try {
+					p.store(oFile, "config");
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 	}
-	
 }

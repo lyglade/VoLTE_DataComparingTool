@@ -73,20 +73,27 @@ public class database {
     		iCon.setAutoCommit(false);
     		String iSql1="DELETE FROM AS_DATA;";
     		this.iPS=iCon.prepareStatement(iSql1);
-    		iPS.executeUpdate();
+    		iPS.executeUpdate();	
 			iSql1="insert into AS_DATA (\'msisdn\') values(?);";
 			this.iPS=iCon.prepareStatement(iSql1);
 			String[] MS_string = (String[])MSISDN.toArray(new String[MSISDN.size()]); 
 			for(i=0;i<MSISDN.size();i++) {
-				iPS.setString(1, MS_string[i]);
-				iPS.addBatch();
+				String str2="insert into AS_DATA (\'msisdn\') values(\'"+MS_string+"\');";
+				iStmt.addBatch(str2);
+//				iPS.setString(1, MS_string[i]);
+//				iPS.addBatch();
+				
 			    if ((i + 1) % batchSize == 0) {
-			        iPS.executeBatch();
+			    	iStmt.executeBatch();
+//			        iPS.executeBatch();
 			    }
 			}
 			if (MSISDN.size() % batchSize != 0) {
-				iPS.executeBatch();
+//				iPS.executeBatch();
+				iStmt.executeBatch();
 			}
+			iPS.close();
+			iCon.close();
 			return i;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -119,6 +126,8 @@ public class database {
 			if (MSISDN.size() % batchSize != 0) {
 				iPS.executeBatch();
 			}
+			iPS.close();
+			iCon.close();
 			return i;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -126,7 +135,21 @@ public class database {
 			return 0;
 		}
     	
-    }	
+    }
+    
+    public void CountItems() {
+    	if(!IsConnected()) this.reConnect();
+    	String  iSql="select * FROM AS_DATA;";
+		
+		try {
+			iRS=iStmt.executeQuery(iSql);
+			System.out.println(iRS.getFetchSize());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
