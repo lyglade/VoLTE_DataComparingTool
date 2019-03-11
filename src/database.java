@@ -67,15 +67,15 @@ public class database {
     public int insertASDATA(ArrayList MSISDN) {
     	if(MSISDN.size()==0) return 0;
 //    	String[] MS_string = (String[])MSISDN.toArray(new String[MSISDN.size()]);
-    	int batchSize = 1000;
+    	int batchSize = 5000;
     	int i;
     	try {
     		iCon.setAutoCommit(false);
     		String iSql1="DELETE FROM AS_DATA;";
     		this.iPS=iCon.prepareStatement(iSql1);
     		iPS.executeUpdate();	
-			iSql1="insert into AS_DATA (\'msisdn\') values(?);";
-			this.iPS=iCon.prepareStatement(iSql1);
+//			iSql1="insert into AS_DATA (\'msisdn\') values(?);";
+//			this.iPS=iCon.prepareStatement(iSql1);
 			String[] MS_string = (String[])MSISDN.toArray(new String[MSISDN.size()]); 
 			for(i=0;i<MSISDN.size();i++) {
 				String str2="insert into AS_DATA (\'msisdn\') values(\'"+MS_string+"\');";
@@ -85,15 +85,16 @@ public class database {
 				
 			    if ((i + 1) % batchSize == 0) {
 			    	iStmt.executeBatch();
+			    	iCon.commit();
 //			        iPS.executeBatch();
+			    	System.out.println(i);
 			    }
 			}
 			if (MSISDN.size() % batchSize != 0) {
 //				iPS.executeBatch();
 				iStmt.executeBatch();
+				iCon.commit();
 			}
-			iPS.close();
-			iCon.close();
 			return i;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -106,7 +107,7 @@ public class database {
     public int insertENUMDNS_DATA(ArrayList MSISDN) {
     	if(MSISDN.size()==0) return 0;
 //    	String[] MS_string = (String[])MSISDN.toArray(new String[MSISDN.size()]);
-    	int batchSize = 1000;
+    	int batchSize = 5000;
     	int i;
     	try {
     		iCon.setAutoCommit(false);
@@ -121,13 +122,14 @@ public class database {
 				iPS.addBatch();
 			    if ((i + 1) % batchSize == 0) {
 			        iPS.executeBatch();
+			        iCon.commit();
+			        System.out.println(i);
 			    }
 			}
 			if (MSISDN.size() % batchSize != 0) {
 				iPS.executeBatch();
+				iCon.commit();
 			}
-			iPS.close();
-			iCon.close();
 			return i;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -143,7 +145,12 @@ public class database {
 		
 		try {
 			iRS=iStmt.executeQuery(iSql);
-			System.out.println(iRS.getFetchSize());
+			int rowCount = 0; 
+			while(iRS.next()){ 
+			 rowCount++; 
+			} 
+			
+			System.out.println(rowCount);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
