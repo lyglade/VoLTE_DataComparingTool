@@ -390,8 +390,7 @@ public class MainBoard {
 				    FileInputStream fis = null;
 				    InputStreamReader isr = null;
 					BufferedReader br = null; // 用于包装InputStreamReader,提高处理性能。因为BufferedReader有缓冲的，而InputStreamReader没有。
-					String MSISDN,IMSI,IMPI,YHDZD_NUM,MCAP;
-					boolean YHDZD_IND=false;
+					String MSISDN,IMSI,IMPI,YHDZD_NUM,YHDZD_IND,MCAP;
 					for(i=0;i<f.length;i++) {
 				        try {
 				            String str = "";
@@ -407,6 +406,7 @@ public class MainBoard {
 									IMSI="";
 									IMPI="";
 									MCAP="";
+									YHDZD_IND="";
 									YHDZD_NUM="";
 									ArrayList<String> IMPU=new ArrayList<String>();
 									ArrayList<String> sIFC=new ArrayList<String>();
@@ -419,7 +419,7 @@ public class MainBoard {
 				            			else if(str.startsWith("IMPU")) IMPU.add(str.substring(9,str.indexOf(";")));
 				            			else if(str.startsWith("SharediFCSetID")) sIFC.add(str.substring(15,str.indexOf(";")));
 				            			else if(str.startsWith("ServiceData=")&&(Pos1=str.indexOf("<conpr><act>1</act><seq>2</seq><cdti>0</cdti><num>tel:"))!=0) {
-				            				YHDZD_IND=true;
+				            				YHDZD_IND=1;
 				            				YHDZD_NUM=str.substring(Pos1+62,str.indexOf("</num>",Pos1)-(Pos1+63));
 				            			}
 				            				
