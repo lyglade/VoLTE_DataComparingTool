@@ -23,11 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.awt.Color;
+import java.awt.Dimension;
 
 public class MainBoard {
 	Properties p=new Properties();
 	database qSQL=new database();
-	FileOutputStream oFile=null;
+	FileOutputStream  fops=null;
 	String RUN_path;
 	private JFrame frame;
 
@@ -66,13 +67,10 @@ public class MainBoard {
 		
 //		Properties p=new Properties();
 //		database qSQL=new database();
+		RUN_path=qSQL.getConfig(1);
 		try {
-			oFile=new FileOutputStream(new File("config.properties"),true);
-			
-			p.load(new FileInputStream(new File("config.properties")));
-			RUN_path=p.getProperty("RUNPATH");
-			
-		} catch (IOException e2) {
+			fops=new FileOutputStream (System.getProperty("user.dir")+"\\RunRecord.log",false);
+		} catch (FileNotFoundException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
@@ -88,19 +86,7 @@ public class MainBoard {
 		frame.getContentPane().add(comboBox);
 		
 		JButton btnNewButton = new JButton("\u5BFC\u5165HSS\u6570\u636E");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser fd = new JFileChooser();
-				//fd.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				fd.setMultiSelectionEnabled(true);
-				fd.showOpenDialog(null);				
-				File f[] = fd.getSelectedFiles();
-				if(f != null){
-					
-					
-				}
-			}
-		});
+
 		btnNewButton.setBounds(120, 172, 113, 23);
 		frame.getContentPane().add(btnNewButton);
 		
@@ -160,33 +146,61 @@ public class MainBoard {
 		lblNewLabel.setForeground(Color.RED);
 		lblNewLabel.setFont(new Font("微软雅黑", Font.BOLD, 12));
 		lblNewLabel.setBounds(138, 12, 364, 15);
+		String label_str=qSQL.getConfig(2);
+		if(label_str!=null)lblNewLabel.setText(label_str);
 		frame.getContentPane().add(lblNewLabel);
 		
 		JLabel label = new JLabel("\u5C1A\u672A\u5BFC\u5165\u6570\u636E");
 		label.setForeground(Color.RED);
 		label.setFont(new Font("微软雅黑", Font.BOLD, 12));
 		label.setBounds(138, 82, 364, 15);
+		label_str=qSQL.getConfig(3);
+		if(label_str!=null)label.setText(label_str);
 		frame.getContentPane().add(label);
 		
 		JLabel label_1 = new JLabel("\u5C1A\u672A\u5BFC\u5165\u6570\u636E");
 		label_1.setForeground(Color.RED);
 		label_1.setFont(new Font("微软雅黑", Font.BOLD, 12));
 		label_1.setBounds(138, 149, 364, 15);
+		label_str=qSQL.getConfig(4);
+		if(label_str!=null)label_1.setText(label_str);
 		frame.getContentPane().add(label_1);
 		
 		JButton btnNewButton_3 = new JButton("New button");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				qSQL.CountItems();
+				qSQL.exportDATA();
 			}
 		});
 		btnNewButton_3.setBounds(10, 291, 93, 23);
 		frame.getContentPane().add(btnNewButton_3);
+		
+		JButton btnNewButton_4 = new JButton("New button");
+		btnNewButton_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				qSQL.GetUnionSet();
+			}
+		});
+		btnNewButton_4.setBounds(140, 291, 93, 23);
+		frame.getContentPane().add(btnNewButton_4);
+		
+		JSeparator separator_2 = new JSeparator();
+		separator_2.setBounds(10, 208, 492, 2);
+		frame.getContentPane().add(separator_2);
+		
+		JLabel label_2 = new JLabel("\u8BBE\u7F6E:");
+		label_2.setFont(new Font("微软雅黑", Font.BOLD, 17));
+		label_2.setBounds(31, 220, 54, 15);
+		frame.getContentPane().add(label_2);
+		
+		JButton button_3 = new JButton("\u5BFC\u5165\u7701\u5185\u53F7\u6BB5");
+		button_3.setBounds(31, 245, 113, 23);
+		frame.getContentPane().add(button_3);
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ArrayList MSISDN=new ArrayList();
 				JFileChooser fd = new JFileChooser();
-				RUN_path=p.getProperty("RUNPATH");
+				RUN_path=qSQL.getConfig(1);
 				System.out.println(RUN_path);
 				if(RUN_path!=null) fd.setCurrentDirectory(new File(RUN_path));
 				if(fd.showOpenDialog(null)==fd.APPROVE_OPTION) {
@@ -220,6 +234,7 @@ public class MainBoard {
 					            if(AS_result==write) {
 					            	String str1=Integer.toString(write);
 					            	lblNewLabel.setText("AS文件导入成功！共导入"+ str1	 +"行数据！");
+					            	qSQL.setConfig(2, lblNewLabel.getText());
 					            }else {
 					            	lblNewLabel.setText("AS文件导入失败，请检查数据文件！");
 					            }
@@ -255,20 +270,14 @@ public class MainBoard {
 				}
 				
 				}
-				p.setProperty("RUNPATH", fd.getCurrentDirectory().toString());
-				try {
-					p.store(oFile, "config");
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				qSQL.setConfig(1,fd.getCurrentDirectory().toString());
 			}
 		});
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ArrayList MSISDN=new ArrayList();
 				JFileChooser fd = new JFileChooser();
-				RUN_path=p.getProperty("RUNPATH");
+				RUN_path=qSQL.getConfig(1);
 				if(RUN_path!="") fd.setCurrentDirectory(new File(RUN_path));
 				if(fd.showOpenDialog(null)==fd.APPROVE_OPTION) {
 				File f = fd.getSelectedFile();
@@ -281,7 +290,7 @@ public class MainBoard {
 					        try {
 					            String str = "";
 					            fis = new FileInputStream(f);// FileInputStream
-					            
+					            fops.write(("enumdns data insert start! Data file:\"" + f+"\"" ).getBytes());
 					            // 从文件系统中的某个文件中获取字节
 					            isr = new InputStreamReader(fis);// InputStreamReader 是字节流通向字符流的桥梁,
 					            br = new BufferedReader(isr);// 从字符输入流中读取文件中的内容,封装了一个new
@@ -301,9 +310,146 @@ public class MainBoard {
 					            if(AS_result==write) {
 					            	String str1=Integer.toString(write);
 					            	label.setText("ENUMDNS文件导入成功！共导入"+ str1	 +"行数据！");
+					            	fops.write(("ENUMDNS data file insert success!Data file:\"" + f+"\"" ).getBytes());
+					            	qSQL.setConfig(3,label.getText());
 					            }else {
 					            	label.setText("ENUMDNS文件导入失败，请检查数据文件！");
+					            	fops.write(("ENUMDNS data file insert fail!Data file:\"" + f+"\"" ).getBytes());
 					            }
+					            	
+				            
+				        } catch (FileNotFoundException e1) {
+				        	label.setText("找不到指定文件！");
+				        	try {
+								fops.write(("ENUMDNS data file insert fail,can't find the data file!Data file:\"" + f+"\"" ).getBytes());
+							} catch (IOException e2) {
+								// TODO Auto-generated catch block
+								e2.printStackTrace();
+							}
+				            System.out.println("找不到指定文件");
+				        } catch (IOException e1) {
+				        	label.setText("文件错误，请选择有效ENUMDNS数据文件！");
+				        	try {
+								fops.write(("ENUMDNS data file insert fail,file error!Data file:\"" + f+"\"" ).getBytes());
+							} catch (IOException e2) {
+								// TODO Auto-generated catch block
+								e2.printStackTrace();
+							}
+				            System.out.println("读取文件失败");
+				        }
+					      catch (StringIndexOutOfBoundsException e1){
+					    	  label.setText("文件错误，请选择有效ENUMDNS数据文件！");
+					    	  try {
+								fops.write(("Data file error,please input valid enumdns data file!Data file:\"" + f+"\"" ).getBytes());
+							} catch (IOException e2) {
+								// TODO Auto-generated catch block
+								e2.printStackTrace();
+							}
+					    	  System.out.println("文件格式错误！");
+				        }
+					        finally {
+				        }
+				            try {
+				                br.close();
+				                isr.close();
+				                fis.close();
+				                // 关闭的时候最好按照先后顺序关闭最后开的先关闭所以先关s,再关n,最后关m
+				            } catch (IOException e1) {
+				                e1.printStackTrace();
+				            }
+				        }
+				    
+
+					
+				else {
+					label.setText("文件错误，请选择有效ENUMDNS数据文件！");
+					try {
+						fops.write(("Data file error,please input valid enumdns data file!Data file:\"" + f+"\"" ).getBytes());
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				
+				}
+				qSQL.setConfig(1,fd.getCurrentDirectory().toString());
+			}
+		});
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fd = new JFileChooser();
+				fd.setMultiSelectionEnabled(true);
+				RUN_path=qSQL.getConfig(1);
+				if(RUN_path!="") fd.setCurrentDirectory(new File(RUN_path));
+				if(fd.showOpenDialog(null)==fd.APPROVE_OPTION) {
+				File[] f= fd.getSelectedFiles();
+				if(f.length != 0){
+			        int i = 0;
+			        int write = 0;
+			        int Pos1=0;
+				    FileInputStream fis = null;
+				    InputStreamReader isr = null;
+					BufferedReader br = null; // 用于包装InputStreamReader,提高处理性能。因为BufferedReader有缓冲的，而InputStreamReader没有。
+					String MSISDN,IMSI,IMPI,YHDZD_NUM,MCAP;
+					boolean YHDZD_IND=false;
+					for(i=0;i<f.length;i++) {
+				        try {
+				            String str = "";
+				            fis = new FileInputStream(f[i]);// FileInputStream
+				            // 从文件系统中的某个文件中获取字节
+				            isr = new InputStreamReader(fis);// InputStreamReader 是字节流通向字符流的桥梁,
+				            br = new BufferedReader(isr);// 从字符输入流中读取文件中的内容,封装了一个new
+				                                            // InputStreamReader的对象
+				            fops.write(("HSS data insert start! Data file:\"" + f[i]+"\"" ).getBytes());
+				            while ((str = br.readLine()) != null) {
+				            	if(str.startsWith("<SUBBEGIN")){
+									MSISDN="";
+									IMSI="";
+									IMPI="";
+									MCAP="";
+									YHDZD_NUM="";
+									ArrayList<String> IMPU=new ArrayList<String>();
+									ArrayList<String> sIFC=new ArrayList<String>();
+				            		while((str=br.readLine().trim())!="<SUBEND") {
+				            			Pos1=0;
+				            			if(str.startsWith("MCAP")&&MCAP=="")  MCAP=str.substring(5,str.indexOf(";"));
+				            			else if(str.startsWith("IMPI")&&IMPI=="") IMPI=str.substring(5,str.indexOf(";"));
+				            			else if(str.startsWith("IMSI")&&IMSI=="") IMSI=str.substring(5,str.indexOf(";"));
+				            			else if(str.startsWith("MSISDN")&&MSISDN=="") MSISDN=str.substring(9,str.indexOf(";"));
+				            			else if(str.startsWith("IMPU")) IMPU.add(str.substring(9,str.indexOf(";")));
+				            			else if(str.startsWith("SharediFCSetID")) sIFC.add(str.substring(15,str.indexOf(";")));
+				            			else if(str.startsWith("ServiceData=")&&(Pos1=str.indexOf("<conpr><act>1</act><seq>2</seq><cdti>0</cdti><num>tel:"))!=0) {
+				            				YHDZD_IND=true;
+				            				YHDZD_NUM=str.substring(Pos1+62,str.indexOf("</num>",Pos1)-(Pos1+63));
+				            			}
+				            				
+				            		}
+				            		int Wr_result = qSQL.insertHSS_DATA(MSISDN, IMSI, IMPI, YHDZD_NUM, MCAP, IMPU, sIFC);
+				            		if(Wr_result==0) {
+				            			fops.write(("Find error when insert HSS data! "+MSISDN+" insert error！").getBytes());
+//				            			FileOutputStream  fps=null;
+//				            			try {
+//				            				fps=new FileOutputStream ("d:\\as_data.txt",false);
+//				            				String RSrecord=null;
+//				            				iRS= iStmt.executeQuery("SELECT msisdn FROM AS_DATA");
+//				            				System.out.println(iRS.getMetaData());
+//				            				RSrecord=iRS.getString(1);
+//				            				while(iRS.next()) {
+//				            					RSrecord=iRS.getString(1);
+//				            					fps.write(RSrecord.getBytes());
+//				            					fps.write("\r\n".getBytes());
+//				            				}
+//				            				fps.close();
+				            		}
+				            		
+				            		
+				            	}
+				            	
+								write++;
+								if(write%100==0) System.out.println("write="+write);
+				            }
+				            
+				          
 					            	
 				            
 				        } catch (FileNotFoundException e1) {
@@ -328,22 +474,51 @@ public class MainBoard {
 				                e1.printStackTrace();
 				            }
 				        }
-				    
+//		            if(qSQL.IsConnected()!=true) qSQL.reConnect();
+//		            int AS_result=qSQL.insertENUMDNS_DATA(MSISDN);
+//		            if(AS_result==write) {
+//		            	String str1=Integer.toString(write);
+//		            	label.setText("ENUMDNS文件导入成功！共导入"+ str1	 +"行数据！");
+//		            	qSQL.setConfig(3,label.getText());
+//		            }else {
+//		            	label.setText("ENUMDNS文件导入失败，请检查数据文件！");
+//		            }
+					
+				}
 
 					
 				else {
-					label.setText("文件错误，请选择有效ENUMDNS数据文件！");
+					label.setText("文件错误，请选择有效HSS数据文件！");
+					try {
+						fops.write("Data file error,please input valid HSS data file!" .getBytes());
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 				
 				}
-				p.setProperty("RUNPATH", fd.getCurrentDirectory().toString());
-				try {
-					p.store(oFile, "config");
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				qSQL.setConfig(1,fd.getCurrentDirectory().toString());
 			}
 		});
 	}
+//	private void HssDataProcess(database qSql,int Indicator,String FetchStr) {
+//        if(Indicator==0) {     //如果是华为DNS，进行数据处理
+//        	
+//        	
+//        	
+//        	
+//        	MSISDN.add(str.substring(7,18))  ;
+//        }
+//        elseif(Indicator==1) {              						//如果室中兴DNS，进行数据处理
+//        	MSISDN.add(str.substring(7,18)) ;
+//        }	
+//	}
 }
+//class HW_HSSDATA() {
+//	String MSISDN,IMSI,IMPI,YHDZD_IND;
+//	
+//	
+//	
+//	
+//}
