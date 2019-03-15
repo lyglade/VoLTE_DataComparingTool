@@ -380,7 +380,7 @@ public class MainBoard {
 				JFileChooser fd = new JFileChooser();
 				fd.setMultiSelectionEnabled(true);
 				RUN_path=qSQL.getConfig(1);
-				if(RUN_path!="") fd.setCurrentDirectory(new File(RUN_path));
+				if(RUN_path!=null&&RUN_path!="") fd.setCurrentDirectory(new File(RUN_path));
 				if(fd.showOpenDialog(null)==fd.APPROVE_OPTION) {
 				File[] f= fd.getSelectedFiles();
 				if(f.length != 0){
@@ -391,89 +391,211 @@ public class MainBoard {
 				    InputStreamReader isr = null;
 					BufferedReader br = null; // 用于包装InputStreamReader,提高处理性能。因为BufferedReader有缓冲的，而InputStreamReader没有。
 					String MSISDN,IMSI,IMPI,YHDZD_NUM,YHDZD_IND,MCAP;
-					for(i=0;i<f.length;i++) {
-				        try {
-				            String str = "";
-				            fis = new FileInputStream(f[i]);// FileInputStream
-				            // 从文件系统中的某个文件中获取字节
-				            isr = new InputStreamReader(fis);// InputStreamReader 是字节流通向字符流的桥梁,
-				            br = new BufferedReader(isr);// 从字符输入流中读取文件中的内容,封装了一个new
-				                                            // InputStreamReader的对象
-				            fops.write(("HSS data insert start! Data file:\"" + f[i]+"\"" ).getBytes());
-				            while ((str = br.readLine()) != null) {
-				            	if(str.startsWith("<SUBBEGIN")){
-									MSISDN="";
-									IMSI="";
-									IMPI="";
-									MCAP="";
-									YHDZD_IND="";
-									YHDZD_NUM="";
-									ArrayList<String> IMPU=new ArrayList<String>();
-									ArrayList<String> sIFC=new ArrayList<String>();
-				            		while((str=br.readLine().trim())!="<SUBEND") {
-				            			Pos1=0;
-				            			if(str.startsWith("MCAP")&&MCAP=="")  MCAP=str.substring(5,str.indexOf(";"));
-				            			else if(str.startsWith("IMPI")&&IMPI=="") IMPI=str.substring(5,str.indexOf(";"));
-				            			else if(str.startsWith("IMSI")&&IMSI=="") IMSI=str.substring(5,str.indexOf(";"));
-				            			else if(str.startsWith("MSISDN")&&MSISDN=="") MSISDN=str.substring(9,str.indexOf(";"));
-				            			else if(str.startsWith("IMPU")) IMPU.add(str.substring(9,str.indexOf(";")));
-				            			else if(str.startsWith("SharediFCSetID")) sIFC.add(str.substring(15,str.indexOf(";")));
-				            			else if(str.startsWith("ServiceData=")&&(Pos1=str.indexOf("<conpr><act>1</act><seq>2</seq><cdti>0</cdti><num>tel:"))!=0) {
-				            				YHDZD_IND=1;
-				            				YHDZD_NUM=str.substring(Pos1+62,str.indexOf("</num>",Pos1)-(Pos1+63));
-				            			}
-				            				
-				            		}
-				            		int Wr_result = qSQL.insertHSS_DATA(MSISDN, IMSI, IMPI, YHDZD_NUM, MCAP, IMPU, sIFC);
-				            		if(Wr_result==0) {
-				            			fops.write(("Find error when insert HSS data! "+MSISDN+" insert error！").getBytes());
-//				            			FileOutputStream  fps=null;
-//				            			try {
-//				            				fps=new FileOutputStream ("d:\\as_data.txt",false);
-//				            				String RSrecord=null;
-//				            				iRS= iStmt.executeQuery("SELECT msisdn FROM AS_DATA");
-//				            				System.out.println(iRS.getMetaData());
-//				            				RSrecord=iRS.getString(1);
-//				            				while(iRS.next()) {
-//				            					RSrecord=iRS.getString(1);
-//				            					fps.write(RSrecord.getBytes());
-//				            					fps.write("\r\n".getBytes());
-//				            				}
-//				            				fps.close();
-				            		}
-				            		
-				            		
-				            	}
-				            	
-								write++;
-								if(write%100==0) System.out.println("write="+write);
-				            }
-				            
-				          
+					if(comboBox.getSelectedIndex()==0) {     //选择为华为的HSS
+						for(i=0;i<f.length;i++) {
+					        try {
+					            String str = "";
+					            fis = new FileInputStream(f[i]);// FileInputStream
+					            // 从文件系统中的某个文件中获取字节
+					            isr = new InputStreamReader(fis);// InputStreamReader 是字节流通向字符流的桥梁,
+					            br = new BufferedReader(isr);// 从字符输入流中读取文件中的内容,封装了一个new
+					                                            // InputStreamReader的对象
+					            fops.write(("HSS data insert start! Data file:\"" + f[i]+"\"" ).getBytes());
+					            while ((str = br.readLine()) != null) {
+					            	if(str.startsWith("<SUBBEGIN")){
+										MSISDN="";
+										IMSI="";
+										IMPI="";
+										MCAP="";
+										YHDZD_IND="";
+										YHDZD_NUM="";
+										ArrayList<String> IMPU=new ArrayList<String>();
+										ArrayList<String> sIFC=new ArrayList<String>();
+					            		while(!(str=br.readLine().trim()).equals("<SUBEND")) {
+					            			Pos1=0;
+					            			if(str.startsWith("MCAP=")&&MCAP=="")  MCAP=str.substring(5,str.indexOf(";"));
+					            			else if(str.startsWith("IMPI=")&&IMPI=="") IMPI=str.substring(5,str.indexOf(";"));
+					            			else if(str.startsWith("IMSI=")&&IMSI=="") IMSI=str.substring(5,str.indexOf(";"));
+					            			else if(str.startsWith("MSISDN=")&&MSISDN=="") MSISDN=str.substring(9,str.indexOf(";"));
+					            			else if(str.startsWith("IMPU=")&&!(IMPU.contains(str.substring(5,str.indexOf(";"))))) IMPU.add(str.substring(5,str.indexOf(";")));
+					            			else if(str.startsWith("SharediFCSetID=")) sIFC.add(str.substring(15,str.indexOf(";")));
+					            			else if(str.startsWith("ServiceData=")&&(Pos1=str.indexOf("<conpr><act>1</act><seq>2</seq><cdti>0</cdti><num>tel:"))!=-1) {
+					            				YHDZD_IND="1";
+					            				YHDZD_NUM=str.substring(Pos1+57,str.indexOf("</num>",Pos1));
+					            			}
+					            			else if(str.startsWith("ServiceData=")&&(Pos1=str.indexOf("<hon><act>1</act><mix>1</mix><mode>0</mode><calllimit>1</calllimit><dft><shownum>tel:"))!=-1) {
+					            				YHDZD_IND="2";
+					            				YHDZD_NUM=str.substring(Pos1+88,str.indexOf("</shownum>",Pos1));
+					            			}
+					            				
+					            		}
+					            		int Wr_result = qSQL.insertHSS_DATA(MSISDN, IMSI, IMPI,YHDZD_IND, YHDZD_NUM, MCAP, IMPU, sIFC);
+					            		if(Wr_result==0) {
+					            			fops.write(("Find error when insert HSS data! "+MSISDN+" insert error！").getBytes());
+	//				            			FileOutputStream  fps=null;
+	//				            			try {
+	//				            				fps=new FileOutputStream ("d:\\as_data.txt",false);
+	//				            				String RSrecord=null;
+	//				            				iRS= iStmt.executeQuery("SELECT msisdn FROM AS_DATA");
+	//				            				System.out.println(iRS.getMetaData());
+	//				            				RSrecord=iRS.getString(1);
+	//				            				while(iRS.next()) {
+	//				            					RSrecord=iRS.getString(1);
+	//				            					fps.write(RSrecord.getBytes());
+	//				            					fps.write("\r\n".getBytes());
+	//				            				}
+	//				            				fps.close();
+					            		}
+					            		
+					            		
+					            	}
 					            	
-				            
-				        } catch (FileNotFoundException e1) {
-				        	label.setText("找不到指定文件！");
-				            System.out.println("找不到指定文件");
-				        } catch (IOException e1) {
-				        	label.setText("文件错误，请选择有效ENUMDNS数据文件！");
-				            System.out.println("读取文件失败");
-				        }
-					      catch (StringIndexOutOfBoundsException e1){
-					    	  label.setText("文件错误，请选择有效ENUMDNS数据文件！");
-					    	  System.out.println("文件格式错误！");
-				        }
-					        finally {
-				        }
-				            try {
-				                br.close();
-				                isr.close();
-				                fis.close();
-				                // 关闭的时候最好按照先后顺序关闭最后开的先关闭所以先关s,再关n,最后关m
-				            } catch (IOException e1) {
-				                e1.printStackTrace();
-				            }
-				        }
+									write++;
+									if(write%100==0) {
+										System.out.println("write="+write);
+										qSQL.DoCommit();
+									}
+									
+					            }
+					            
+					          
+						            	
+					            
+					        } catch (FileNotFoundException e1) {
+					        	label.setText("找不到指定文件！");
+					            System.out.println("找不到指定文件");
+					        } catch (IOException e1) {
+					        	label.setText("文件错误，请选择有效ENUMDNS数据文件！");
+					            System.out.println("读取文件失败");
+					        }
+						      catch (StringIndexOutOfBoundsException e1){
+						    	  label.setText("文件错误，请选择有效ENUMDNS数据文件！");
+						    	  System.out.println("文件格式错误！");
+					        }
+						        finally {
+					        }
+					            try {
+					                br.close();
+					                isr.close();
+					                fis.close();
+					                // 关闭的时候最好按照先后顺序关闭最后开的先关闭所以先关s,再关n,最后关m
+					            } catch (IOException e1) {
+					                e1.printStackTrace();
+					            }
+					        }
+					}else if(comboBox.getSelectedIndex()==1) {    //选择是中兴HSS时
+						for(i=0;i<f.length;i++) {
+					        try {
+					            String str = "";
+					            fis = new FileInputStream(f[i]);// FileInputStream
+					            // 从文件系统中的某个文件中获取字节
+					            isr = new InputStreamReader(fis);// InputStreamReader 是字节流通向字符流的桥梁,
+					            br = new BufferedReader(isr);// 从字符输入流中读取文件中的内容,封装了一个new
+					                                            // InputStreamReader的对象
+					            fops.write(("HSS data insert start! Data file:\"" + f[i]+"\"" ).getBytes());
+					            while ((str = br.readLine()) != null) {
+					            	if(str.startsWith("PUIINFO:")){
+										MSISDN="";
+										IMSI="";
+										IMPI="";
+										MCAP="";
+										YHDZD_IND="";
+										YHDZD_NUM="";
+										ArrayList<String> IMPU=new ArrayList<String>();
+										ArrayList<String> sIFC=new ArrayList<String>();
+					            		while(!(str=br.readLine().trim()).equals("ENDOFUSER")) {
+					            			Pos1=0;
+					            			if(str.startsWith("PUIINFO:")) {
+					            				int i1=(str.indexOf("SOAPSIFCIDList="))+15;
+					            				int i2=(str.indexOf("$",i1));
+					            				while(i1<i2&&i1!=-1) {  //当该行在,符前还有$符并且在上个^符之后还有^符的情况下，继续循环
+					            					sIFC.add(str.substring(i1,str.indexOf("^",i1)));
+					            					i1=str.indexOf("^",i1)+1;
+					            				}
+					            				
+					            				i1=(str.indexOf("PUILIST="))+8;
+					            				i2=(str.indexOf(",",i1));
+					            				while(i1<i2&&i1!=-1) {  //当该行在,符前还有$符并且在上个^符之后还有^符的情况下，继续循环
+					            					IMPU.add(str.substring(i1,str.indexOf("$",i1)));
+					            					i1=str.indexOf("$",i1)+1;
+					            				}
+					            			}
+					            			else if(str.startsWith("PVIINFO:")) {
+					            				int i1=(str.indexOf("PVILIST="))+8;
+					            				IMPI=str.substring(i1,str.indexOf(",",i1));
+					            						
+					            				i1=(str.indexOf("IMSIList="))+8;
+					            				IMSI=str.substring(i1,str.indexOf(",",i1));
+					            				
+					            				i1=(str.indexOf("ISDNList="))+8;
+					            				MSISDN=str.substring(i1,str.indexOf(",",i1));
+					            			}
+					            			
+					            			else if(str.startsWith("ServiceData=")&&(Pos1=str.indexOf("<conpr><act>1</act><seq>2</seq><cdti>0</cdti><num>tel:"))!=-1) {
+					            				YHDZD_IND="1";
+					            				YHDZD_NUM=str.substring(Pos1+57,str.indexOf("</num>",Pos1));
+					            			}
+					            			else if(str.startsWith("ServiceData=")&&(Pos1=str.indexOf("<hon><act>1</act><mix>1</mix><mode>0</mode><calllimit>1</calllimit><dft><shownum>tel:"))!=-1) {
+					            				YHDZD_IND="2";
+					            				YHDZD_NUM=str.substring(Pos1+88,str.indexOf("</shownum>",Pos1));
+					            			}
+					            				
+					            		}
+					            		int Wr_result = qSQL.insertHSS_DATA(MSISDN, IMSI, IMPI,YHDZD_IND, YHDZD_NUM, MCAP, IMPU, sIFC);
+					            		if(Wr_result==0) {
+					            			fops.write(("Find error when insert HSS data! "+MSISDN+" insert error！").getBytes());
+	//				            			FileOutputStream  fps=null;
+	//				            			try {
+	//				            				fps=new FileOutputStream ("d:\\as_data.txt",false);
+	//				            				String RSrecord=null;
+	//				            				iRS= iStmt.executeQuery("SELECT msisdn FROM AS_DATA");
+	//				            				System.out.println(iRS.getMetaData());
+	//				            				RSrecord=iRS.getString(1);
+	//				            				while(iRS.next()) {
+	//				            					RSrecord=iRS.getString(1);
+	//				            					fps.write(RSrecord.getBytes());
+	//				            					fps.write("\r\n".getBytes());
+	//				            				}
+	//				            				fps.close();
+					            		}
+					            		
+					            		
+					            	}
+					            	
+									write++;
+									if(write%100==0) {
+										System.out.println("write="+write);
+										qSQL.DoCommit();
+									}
+									
+					            }
+					            
+					          
+						            	
+					            
+					        } catch (FileNotFoundException e1) {
+					        	label.setText("找不到指定文件！");
+					            System.out.println("找不到指定文件");
+					        } catch (IOException e1) {
+					        	label.setText("文件错误，请选择有效ENUMDNS数据文件！");
+					            System.out.println("读取文件失败");
+					        }
+						      catch (StringIndexOutOfBoundsException e1){
+						    	  label.setText("文件错误，请选择有效ENUMDNS数据文件！");
+						    	  System.out.println("文件格式错误！");
+					        }
+						        finally {
+					        }
+					            try {
+					                br.close();
+					                isr.close();
+					                fis.close();
+					                // 关闭的时候最好按照先后顺序关闭最后开的先关闭所以先关s,再关n,最后关m
+					            } catch (IOException e1) {
+					                e1.printStackTrace();
+					            }
+					        }
+					}
 //		            if(qSQL.IsConnected()!=true) qSQL.reConnect();
 //		            int AS_result=qSQL.insertENUMDNS_DATA(MSISDN);
 //		            if(AS_result==write) {

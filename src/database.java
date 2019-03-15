@@ -29,10 +29,10 @@ public class database {
 	      if (!iRS.next()) {
 	    	  iStmt.executeUpdate("create table AS_DATA(msisdn varchar(15))");//判断是否为空数据库文件，如果是空，则初始建立基础表
 	    	  iStmt.executeUpdate("create table ENUMDNS_DATA(msisdn varchar(15))");//建立ENUMDNS表
-	    	  iStmt.executeUpdate("create table HSS_DATA(HSS varchar(15),msisdn varchar(15),imsi varchar(15),impi varchar(100),cap_set varchar(4),YHDZD_ind varchar(5),YHDZD_num varchar(15))");//判断是否有表tables的存在。有则删除
+	    	  iStmt.executeUpdate("create table HSS_DATA(HSS varchar(15),msisdn varchar(15),imsi varchar(15),impi varchar(100),cap_set varchar(4),YHDZD_ind varchar(5),YHDZD_num varchar(15))");
 	    	  iStmt.executeUpdate("create table AS_ENUMDNS(msisdn varchar(15))");//建立AS_ENUMDNS表
-	    	  iStmt.executeUpdate("create table IMPU(msisdn varchar(15),impu varchar(100)");//建立IMPU表
-	    	  iStmt.executeUpdate("create table SIFC(msisdn varchar(15),sifc varchar(20)");//建立IMPU表
+	    	  iStmt.executeUpdate("create table IMPU(msisdn varchar(15),impu varchar(100))");//建立IMPU表
+	    	  iStmt.executeUpdate("create table SIFC(msisdn varchar(15),sifc varchar(20))");//建立IMPU表
 	    	  iStmt.executeUpdate("create table APP_CONFIG (ID varchar(10),CONFIG_STR varchar(300))");
 	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'1\')");   //APP_CONFIG表中，记录打开文件的目录位置
 	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'2\')");   //APP_CONFIG表中，记录AS label的内容
@@ -155,22 +155,21 @@ public class database {
     	
     }
     
-    public int insertHSS_DATA(String MSISDN,String IMSI,String IMPI,String YHDZD_NUM,String MCAP,ArrayList IMPU,ArrayList sIFC) {
+    public int insertHSS_DATA(String MSISDN,String IMSI,String IMPI,String YHDZD_IND,String YHDZD_NUM,String MCAP, ArrayList IMPU,ArrayList sIFC) {
     	if(!IsConnected()) this.reConnect();
-    	int batchSize = 5000;
     	int i,j;
     	try {
     		iCon.setAutoCommit(false);
-    		String iSql1="insert into HSS_DATA (\'msisdn\',\'imsi\',\'impi\',\'yhdzd_ind\',\'cap_set\') values(?,?,?,?,?);";
+    		String iSql1="insert into HSS_DATA (\'msisdn\',\'imsi\',\'impi\',\'yhdzd_ind\',\'yhdzd_num\',\'cap_set\') values(?,?,?,?,?,?);";
     		this.iPS=iCon.prepareStatement(iSql1);
     		iPS.setString(1, MSISDN);
     		iPS.setString(2, IMSI);
     		iPS.setString(3, IMPI);
-    		iPS.setString(4, YHDZD_NUM);
-    		iPS.setString(5, MCAP);
+    		iPS.setString(4, YHDZD_IND);
+    		iPS.setString(5, YHDZD_NUM);
+    		iPS.setString(6, MCAP);
     		iPS.addBatch();
-    		iCon.commit();
-    		
+    		iPS.executeBatch();
     		
 			for(i=0;i<IMPU.size();i++) {
 	    		iSql1="insert into IMPU (\'msisdn\',\'impu\') values(?,?)";
@@ -178,18 +177,19 @@ public class database {
 				iPS.setString(1, MSISDN);
 				iPS.setString(2, (String) IMPU.get(i));
 				iPS.addBatch();
-				iCon.commit();
+				iPS.executeBatch();
 			    }
 			
 			for(j=0;j<sIFC.size();j++) {
-	    		iSql1="insert into SICF (\'msisdn\',\'sifc\') values(?,?)";
+	    		iSql1="insert into SIfC (\'msisdn\',\'sifc\') values(?,?)";
 	    		this.iPS=iCon.prepareStatement(iSql1);
 				iPS.setString(1, MSISDN);
 				iPS.setString(2, (String) sIFC.get(j));
 				iPS.addBatch();
-				iCon.commit();
+				iPS.executeBatch();
 			    }
-			iCon.setAutoCommit(true);
+//			iCon.commit();
+//			iCon.setAutoCommit(true);
 			if(i<=j)return i;
 			
 		} catch (SQLException e) {
@@ -199,6 +199,15 @@ public class database {
 			return 0;
 		}
 		return j;
+    }
+    
+    public void DoCommit() {
+    	try {
+			iCon.commit();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     public void CountItems() {
@@ -294,8 +303,38 @@ public class database {
 			}
 			fps.close();
 			
+			fps=new FileOutputStream ("d:\\HSS_DATA.txt",false);
+			RSrecord=null;
+			iRS= iStmt.executeQuery("SELECT * FROM HSS_DATA");
+			System.out.println(iRS.getMetaData());
+			while(iRS.next()) {
+				RSrecord=iRS.getString(1) + " " +iRS.getString(2)+ " "+ iRS.getString(3)+ " "+ iRS.getString(4)+ " "+ iRS.getString(5)+ " "+ iRS.getString(6)+ " "+ iRS.getString(7) ;
+				fps.write(RSrecord.getBytes());
+				fps.write("\r\n".getBytes());
+			}
+			fps.close();
 			
+			fps=new FileOutputStream ("d:\\IMPU.txt",false);
+			RSrecord=null;
+			iRS= iStmt.executeQuery("SELECT * FROM IMPU");
+			System.out.println(iRS.getMetaData());
+			while(iRS.next()) {
+				RSrecord=iRS.getString(1) + " " +iRS.getString(2);
+				fps.write(RSrecord.getBytes());
+				fps.write("\r\n".getBytes());
+			}
+			fps.close();
 			
+			fps=new FileOutputStream ("d:\\SIFC.txt",false);
+			RSrecord=null;
+			iRS= iStmt.executeQuery("SELECT * FROM SIFC");
+			System.out.println(iRS.getMetaData());
+			while(iRS.next()) {
+				RSrecord=iRS.getString(1) + " " +iRS.getString(2);
+				fps.write(RSrecord.getBytes());
+				fps.write("\r\n".getBytes());
+			}
+			fps.close();
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
