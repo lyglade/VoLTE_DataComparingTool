@@ -25,19 +25,33 @@ public class database {
 	      iUrl="jdbc:sqlite:sys.db";
 	      iCon = DriverManager.getConnection(iUrl);
 	      iStmt=iCon.createStatement();   //创建连接对象，是Java的一个操作数据库的重要接口
-	      iRS =iCon.getMetaData().getTables(null, null, "AS_DATA", null);
+	      iRS =iCon.getMetaData().getTables(null, null, "APN_DATA", null);
 	      if (!iRS.next()) {
-	    	  iStmt.executeUpdate("create table AS_DATA(msisdn varchar(15))");//判断是否为空数据库文件，如果是空，则初始建立基础表
-	    	  iStmt.executeUpdate("create table ENUMDNS_DATA(msisdn varchar(15))");//建立ENUMDNS表
+	    	  iStmt.executeUpdate("create table APN_DATA(msisdn varchar(15))");//判断是否为空数据库文件，如果是空，则初始建立基础表
+	    	  iStmt.executeUpdate("create table ENUMDNS_DATA(msisdn varchar(15),domain varchar(100))");//建立ENUMDNS表
 	    	  iStmt.executeUpdate("create table HSS_DATA(HSS varchar(15),msisdn varchar(15),imsi varchar(15),impi varchar(100),cap_set varchar(4),YHDZD_ind varchar(5),YHDZD_num varchar(15))");
-	    	  iStmt.executeUpdate("create table AS_ENUMDNS(msisdn varchar(15))");//建立AS_ENUMDNS表
+	    	  iStmt.executeUpdate("create table APN_ENUMDNS(msisdn varchar(15))");//建立APN_ENUMDNS表
 	    	  iStmt.executeUpdate("create table IMPU(msisdn varchar(15),impu varchar(100))");//建立IMPU表
 	    	  iStmt.executeUpdate("create table SIFC(msisdn varchar(15),sifc varchar(20))");//建立IMPU表
+	    	  iStmt.executeUpdate("create table ALL_FIX(msisdn varchar(15))");//建立全匹配记录表
+	    	  iStmt.executeUpdate("create table HSS_APN_FIX(msisdn varchar(15))");//建立HSS_APN匹配记录表
+	    	  iStmt.executeUpdate("create table HSS_ENUMDNS_FIX(msisdn varchar(15))");//建立HSS_ENUMDNS匹配记录表
+	    	  iStmt.executeUpdate("create table APN_ENUMDNS_FIX(msisdn varchar(15))");//建立APN_ENUMDNSS匹配记录表	    	  
+	    	  iStmt.executeUpdate("create table HSS_ONLY(msisdn varchar(15))");//建立ENUMDNS_HSS匹配记录表
+	    	  iStmt.executeUpdate("create table ENUMDNS_ONLY(msisdn varchar(15))");//建立ENUMDNS_APN匹配记录表
+	    	  iStmt.executeUpdate("create table APN_ONLY(msisdn varchar(15))");//建立APN_HSS匹配记录表
+	    	  iStmt.executeUpdate("create table HSS (HSS varchar(10),Manufacturer varchar(10))");//建立hss表
+	    	  iStmt.executeUpdate("create table City(City varchar(15),NumPrefix varchar(10),HSS varchar(10))");//建立CITY表
+	    	  iStmt.executeUpdate("create table Numlist(Province varchar(15),City varchar(15),AreaCode varchar(10), Num varchar(15))");//建立numlist表	    	  
 	    	  iStmt.executeUpdate("create table APP_CONFIG (ID varchar(10),CONFIG_STR varchar(300))");
 	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'1\')");   //APP_CONFIG表中，记录打开文件的目录位置
-	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'2\')");   //APP_CONFIG表中，记录AS label的内容
+	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'2\')");   //APP_CONFIG表中，记录APN label的内容
 	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'3\')");   //APP_CONFIG表中，记录ENUMDNS label的内容
 	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'4\')");   //APP_CONFIG表中，记录HSS label的内容
+	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'5\')");   //APP_CONFIG表中，记录HSS的导入数据条数
+	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'6\')");   //APP_CONFIG表中，备用
+	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'7\')");   //APP_CONFIG表中，备用
+	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'8\')");   //APP_CONFIG表中，备用
           }	      
 	    } 
 	    catch ( Exception e ) {
@@ -76,7 +90,7 @@ public class database {
 			e.printStackTrace();
 		}
 	}
-    public int insertASDATA(ArrayList MSISDN) {
+    public int insertAPNDATA(ArrayList MSISDN) {
     	if(!IsConnected()) this.reConnect();
     	if(MSISDN.size()==0) return 0;
 //    	String[] MS_string = (String[])MSISDN.toArray(new String[MSISDN.size()]);
@@ -84,14 +98,14 @@ public class database {
     	int i;
     	try {
     		iCon.setAutoCommit(false);
-    		String iSql1="DELETE FROM AS_DATA;";
+    		String iSql1="DELETE FROM APN_DATA;";
     		this.iPS=iCon.prepareStatement(iSql1);
     		iPS.executeUpdate();	
-//			iSql1="insert into AS_DATA (\'msisdn\') values(?);";
+//			iSql1="insert into APN_DATA (\'msisdn\') values(?);";
 //			this.iPS=iCon.prepareStatement(iSql1);
 			String[] MS_string = (String[])MSISDN.toArray(new String[MSISDN.size()]); 
 			for(i=0;i<MSISDN.size();i++) {
-				String str2="insert into AS_DATA (\'msisdn\') values(\'"+MS_string[i]+"\');";
+				String str2="insert into APN_DATA (\'msisdn\') values(\'"+MS_string[i]+"\');";
 				iStmt.addBatch(str2);
 //				iPS.setString(1, MS_string[i]);
 //				iPS.addBatch();
@@ -154,7 +168,18 @@ public class database {
 		}
     	
     }
-    
+    public void delHSS_DATA() {
+    	if(!IsConnected()) this.reConnect();
+		try {
+			iStmt.executeUpdate("DELETE FROM HSS_DATA;");
+			iStmt.executeUpdate("DELETE FROM IMPU;");
+			iStmt.executeUpdate("DELETE FROM SIFC;");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+    }
     public int insertHSS_DATA(String MSISDN,String IMSI,String IMPI,String YHDZD_IND,String YHDZD_NUM,String MCAP, ArrayList IMPU,ArrayList sIFC) {
     	if(!IsConnected()) this.reConnect();
     	int i,j;
@@ -190,7 +215,8 @@ public class database {
 			    }
 //			iCon.commit();
 //			iCon.setAutoCommit(true);
-			if(i<=j)return i;
+			if(i==0&&j==0) return 1;
+			else if(i<j) return i;
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -210,10 +236,9 @@ public class database {
 		}
     }
     
-    public void CountItems() {
+    public int CountItems(String TableName) {
     	if(!IsConnected()) this.reConnect();
-    	String  iSql="select * FROM AS_DATA;";
-		
+    	String  iSql="select * FROM "+TableName;
 		try {
 			iRS=iStmt.executeQuery(iSql);
 			int rowCount = 0; 
@@ -222,21 +247,22 @@ public class database {
 			} 
 			
 			System.out.println(rowCount);
+			return rowCount;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return 0;
 		}
-    	
     }
     
 	public void GetUnionSet() {		
 		try {
 			if(!IsConnected()) this.reConnect();
-			iStmt.executeUpdate("DELETE FROM AS_ENUMDNS;");
-			iStmt.executeUpdate("INSERT INTO AS_ENUMDNS (\'msisdn\') SELECT msisdn FROM AS_DATA");
-			iStmt.executeUpdate("INSERT INTO AS_ENUMDNS (\'msisdn\') SELECT msisdn FROM ENUMDNS_DATA");
+			iStmt.executeUpdate("DELETE FROM APN_ENUMDNS;");
+			iStmt.executeUpdate("INSERT INTO APN_ENUMDNS (\'msisdn\') SELECT msisdn FROM APN_DATA");
+			iStmt.executeUpdate("INSERT INTO APN_ENUMDNS (\'msisdn\') SELECT msisdn FROM ENUMDNS_DATA");
 //			iCon.commit();
-			iRS=iStmt.executeQuery("select DISTINCT * FROM  AS_ENUMDNS;");
+			iRS=iStmt.executeQuery("select DISTINCT * FROM  APN_ENUMDNS;");
 			int rowCount = 1; 
 			System.out.println(iRS.getString(1));
 			while(iRS.next()){ 
@@ -255,9 +281,9 @@ public class database {
 		FileOutputStream  fps=null;
 		try {
 			if(!IsConnected()) this.reConnect();
-			fps=new FileOutputStream ("d:\\as_data.txt",false);
+			fps=new FileOutputStream ("d:\\APN_data.txt",false);
 			String RSrecord=null;
-			iRS= iStmt.executeQuery("SELECT msisdn FROM AS_DATA");
+			iRS= iStmt.executeQuery("SELECT msisdn FROM APN_DATA");
 			System.out.println(iRS.getMetaData());
 			RSrecord=iRS.getString(1);
 			while(iRS.next()) {
@@ -280,9 +306,9 @@ public class database {
 			fps.close();		
 			
 			
-			fps=new FileOutputStream ("d:\\as_enumdns.txt",false);
+			fps=new FileOutputStream ("d:\\APN_enumdns.txt",false);
 			RSrecord=null;
-			iRS= iStmt.executeQuery("SELECT msisdn FROM AS_ENUMDNS");
+			iRS= iStmt.executeQuery("SELECT msisdn FROM APN_ENUMDNS");
 			System.out.println(iRS.getMetaData());
 			RSrecord=iRS.getString(1);
 			while(iRS.next()) {
@@ -336,6 +362,82 @@ public class database {
 			}
 			fps.close();
 			
+			fps=new FileOutputStream ("d:\\ALL_FIX.txt",false);
+			RSrecord=null;
+			iRS= iStmt.executeQuery("SELECT * FROM ALL_FIX");
+			System.out.println(iRS.getMetaData());
+			while(iRS.next()) {
+				RSrecord=iRS.getString(1);
+				fps.write(RSrecord.getBytes());
+				fps.write("\r\n".getBytes());
+			}
+			fps.close();
+			
+			fps=new FileOutputStream ("d:\\HSS_APN_FIX.txt",false);
+			RSrecord=null;
+			iRS= iStmt.executeQuery("SELECT * FROM HSS_APN_FIX");
+			System.out.println(iRS.getMetaData());
+			while(iRS.next()) {
+				RSrecord=iRS.getString(1);
+				fps.write(RSrecord.getBytes());
+				fps.write("\r\n".getBytes());
+			}
+			fps.close();
+			
+			fps=new FileOutputStream ("d:\\HSS_ENUMDNS_FIX.txt",false);
+			RSrecord=null;
+			iRS= iStmt.executeQuery("SELECT * FROM HSS_ENUMDNS_FIX");
+			System.out.println(iRS.getMetaData());
+			while(iRS.next()) {
+				RSrecord=iRS.getString(1);
+				fps.write(RSrecord.getBytes());
+				fps.write("\r\n".getBytes());
+			}
+			fps.close();
+			
+			fps=new FileOutputStream ("d:\\APN_ENUMDNS_FIX.txt",false);
+			RSrecord=null;
+			iRS= iStmt.executeQuery("SELECT * FROM APN_ENUMDNS_FIX");
+			System.out.println(iRS.getMetaData());
+			while(iRS.next()) {
+				RSrecord=iRS.getString(1) ;
+				fps.write(RSrecord.getBytes());
+				fps.write("\r\n".getBytes());
+			}
+			fps.close();
+			
+			fps=new FileOutputStream ("d:\\HSS_ONLY.txt",false);
+			RSrecord=null;
+			iRS= iStmt.executeQuery("SELECT * FROM HSS_ONLY");
+			System.out.println(iRS.getMetaData());
+			while(iRS.next()) {
+				RSrecord=iRS.getString(1) ;
+				fps.write(RSrecord.getBytes());
+				fps.write("\r\n".getBytes());
+			}
+			fps.close();
+			
+			fps=new FileOutputStream ("d:\\APN_ONLY.txt",false);
+			RSrecord=null;
+			iRS= iStmt.executeQuery("SELECT * FROM APN_ONLY");
+			System.out.println(iRS.getMetaData());
+			while(iRS.next()) {
+				RSrecord=iRS.getString(1) ;
+				fps.write(RSrecord.getBytes());
+				fps.write("\r\n".getBytes());
+			}
+			fps.close();
+			
+			fps=new FileOutputStream ("d:\\ENUMDNS_ONLY.txt",false);
+			RSrecord=null;
+			iRS= iStmt.executeQuery("SELECT * FROM ENUMDNS_ONLY");
+			System.out.println(iRS.getMetaData());
+			while(iRS.next()) {
+				RSrecord=iRS.getString(1) ;
+				fps.write(RSrecord.getBytes());
+				fps.write("\r\n".getBytes());
+			}
+			fps.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -357,7 +459,7 @@ public class database {
     			result =iRS.getString(2);
     			System.out.println(result);
     		}
-    		
+    		if(ItemNumber==5&&result==null) result="0";
     		return result; 
     	}
     	 catch(SQLException e) {
@@ -378,7 +480,106 @@ public class database {
     		 System.err.print(e);
     		 
     	 }
-	}	
+	}
+	public void Data_Analyze() {
+		if(!IsConnected()) this.reConnect();
+		GetUnionSet();
+		try {
+			String iSql1="DELETE FROM ALL_FIX;DELETE FROM HSS_APN_FIX;DELETE FROM HSS_ENUMDNS_FIX;DELETE FROM APN_ENUMDNS_FIX;DELETE FROM HSS_ONLY;DELETE FROM APN_ONLY;DELETE FROM ENUMDNS_ONLY" ;
+			iStmt.executeUpdate(iSql1);
+			
+//			iSql1="DELETE FROM APN_FIX" ;
+//			iStmt.executeUpdate(iSql1);			
+//			DELETE FROM APN_FIX
+			iSql1="INSERT INTO ALL_FIX (msisdn) SELECT  HSS_DATA.msisdn " + 
+					"FROM HSS_DATA INNER JOIN (APN_DATA INNER JOIN ENUMDNS_DATA ON APN_DATA.msisdn = ENUMDNS_DATA.msisdn) ON HSS_DATA.\'msisdn\' = ENUMDNS_DATA.\'msisdn\'";
+			iStmt.executeUpdate(iSql1);
+			
+//			iSql1="INSERT INTO ALL_FIX (msisdn) SELECT  HSS_DATA.msisdn " + 
+//					"FROM HSS_DATA WHERE HSS_DATA.msisdn IN (SELECT APN_DATA.msisdn FROM APN_DATA) AND HSS_DATA.msisdn IN (SELECT ENUMDNS_DATA.msisdn FROM ENUMDNS_DATA)";
+//			iStmt.executeUpdate(iSql1);
+					
+			iSql1="INSERT INTO HSS_APN_FIX (msisdn) SELECT  HSS_DATA.msisdn " + 
+					"FROM HSS_DATA WHERE HSS_DATA.msisdn IN  (SELECT APN_DATA.msisdn  FROM APN_DATA WHERE APN_DATA.msisdn NOT IN (SELECT ALL_FIX.msisdn FROM ALL_FIX))";
+			iStmt.executeUpdate(iSql1);			
+			
+			iSql1="INSERT INTO HSS_ENUMDNS_FIX (msisdn) SELECT  HSS_DATA.msisdn " + 
+					"FROM HSS_DATA WHERE HSS_DATA.msisdn IN  (SELECT ENUMDNS_DATA.msisdn  FROM ENUMDNS_DATA WHERE ENUMDNS_DATA.msisdn NOT IN (SELECT ALL_FIX.msisdn FROM ALL_FIX))";
+			iStmt.executeUpdate(iSql1);	
+			
+			iSql1="INSERT INTO APN_ENUMDNS_FIX (msisdn) SELECT  APN_DATA.msisdn " + 
+					"FROM APN_DATA WHERE APN_DATA.msisdn IN  (SELECT ENUMDNS_DATA.msisdn  FROM ENUMDNS_DATA WHERE ENUMDNS_DATA.msisdn NOT IN (SELECT ALL_FIX.msisdn FROM ALL_FIX))";
+			iStmt.executeUpdate(iSql1);				
+			
+			iSql1="INSERT INTO HSS_ONLY (msisdn) SELECT  HSS_DATA.msisdn " + 
+					"FROM HSS_DATA WHERE HSS_DATA.msisdn NOT IN  (SELECT ALL_FIX.msisdn  FROM ALL_FIX) AND HSS_DATA.msisdn NOT IN  (SELECT HSS_APN_FIX.msisdn  FROM HSS_APN_FIX) AND HSS_DATA.msisdn NOT IN  (SELECT HSS_ENUMDNS_FIX.msisdn  FROM HSS_ENUMDNS_FIX)";
+			iStmt.executeUpdate(iSql1);	
+			
+			iSql1="INSERT INTO APN_ONLY (msisdn) SELECT  APN_DATA.msisdn " + 
+					"FROM APN_DATA WHERE APN_DATA.msisdn NOT IN  (SELECT ALL_FIX.msisdn  FROM ALL_FIX) AND APN_DATA.msisdn NOT IN  (SELECT HSS_APN_FIX.msisdn  FROM HSS_APN_FIX) AND APN_DATA.msisdn NOT IN  (SELECT APN_ENUMDNS_FIX.msisdn  FROM APN_ENUMDNS_FIX)";
+			iStmt.executeUpdate(iSql1);	
+			
+			iSql1="INSERT INTO ENUMDNS_ONLY (msisdn) SELECT  ENUMDNS_DATA.msisdn " + 
+					"FROM ENUMDNS_DATA WHERE ENUMDNS_DATA.msisdn NOT IN  (SELECT ALL_FIX.msisdn  FROM ALL_FIX) AND ENUMDNS_DATA.msisdn NOT IN  (SELECT APN_ENUMDNS_FIX.msisdn  FROM APN_ENUMDNS_FIX) AND ENUMDNS_DATA.msisdn NOT IN  (SELECT HSS_ENUMDNS_FIX.msisdn  FROM HSS_ENUMDNS_FIX)";
+			iStmt.executeUpdate(iSql1);	
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public 	String[] Analyze_Count() {
+		if(!IsConnected()) this.reConnect();
+		String[] result=new String[10];
+    	try {
+    		String iSql="SELECT COUNT(msisdn) FROM HSS_DATA ";
+    		iRS=iStmt.executeQuery(iSql);
+    		result[0] =iRS.getString(1);
+    		
+    		iSql="SELECT COUNT(msisdn) FROM APN_DATA ";
+    		iRS=iStmt.executeQuery(iSql);
+    		result[1] =iRS.getString(1);
+    		
+    		iSql="SELECT COUNT(msisdn) FROM ENUMDNS_DATA ";
+    		iRS=iStmt.executeQuery(iSql);
+    		result[2] =iRS.getString(1);
+    		
+    		iSql="SELECT COUNT(msisdn) FROM ALL_FIX ";
+    		iRS=iStmt.executeQuery(iSql);
+    		result[3] =iRS.getString(1);
+    		
+    		iSql="SELECT COUNT(msisdn) FROM HSS_APN_FIX ";
+    		iRS=iStmt.executeQuery(iSql);
+    		result[4] =iRS.getString(1);
+    		
+    		iSql="SELECT COUNT(msisdn) FROM HSS_ENUMDNS_FIX ";
+    		iRS=iStmt.executeQuery(iSql);
+    		result[5] =iRS.getString(1);
+    		
+    		iSql="SELECT COUNT(msisdn) FROM APN_ENUMDNS_FIX ";
+    		iRS=iStmt.executeQuery(iSql);
+    		result[6] =iRS.getString(1);
+    		
+    		iSql="SELECT COUNT(msisdn) FROM HSS_ONLY ";
+    		iRS=iStmt.executeQuery(iSql);
+    		result[7] =iRS.getString(1);
+    		
+    		iSql="SELECT COUNT(msisdn) FROM APN_ONLY ";
+    		iRS=iStmt.executeQuery(iSql);
+    		result[8] =iRS.getString(1);
+    		
+    		iSql="SELECT COUNT(msisdn) FROM ENUMDNS_ONLY ";
+    		iRS=iStmt.executeQuery(iSql);
+    		result[9] =iRS.getString(1);
+    		return result; 
+    	}
+    	 catch(SQLException e) {
+    		 System.err.print(e);
+    		 return null;
+    	 }
+	}
+	
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

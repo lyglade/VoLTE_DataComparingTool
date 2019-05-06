@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--   <meta name="description" content="">
+  <meta name="author" content="Dashboard"> -->
+<!--   <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina"> -->
+  <title>比对结果</title>
+
+  <!-- Favicons -->
+<!--   <link href="img/favicon.png" rel="icon">
+  <link href="img/apple-touch-icon.png" rel="apple-touch-icon"> -->
+
+  <!-- Bootstrap core CSS -->
+  <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!--external css-->
+  <link href="lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="css/style.css" rel="stylesheet">
+<!--   <link href="css/style-responsive.css" rel="stylesheet"> -->
+
+  <!-- =======================================================
+    Template Name: Dashio
+    Template URL: https://templatemag.com/dashio-bootstrap-admin-template/
+    Author: TemplateMag.com
+    License: https://templatemag.com/license/
+  ======================================================= -->
+
+
+</head>
+
+<body>
+<!--   <section id="container"> -->
+
+<!--     <section id="main-content"> -->
+      <section class="wrapper">
+
+<!--         <div class="tab-pane" id="chartjs"> -->
+
+          <div class="row mt">
+            <div class="col-sm-4 col-md-4 col-lg-4" >
+              <div class="content-panel">
+                <h4 style="text-align: center;color: black;font-weight: bold;">HSS数据对比分析</h4>
+                <div class="panel-body text-center">
+                  <!-- <canvas id="pie1hss" height="350" width="450"></canvas> 使用canvas无法显示tooltip-->
+                  <div style="height:280px;" id="pie1hss"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+              <div class="content-panel">
+                <h4 style="text-align: center;color: black;font-weight: bold;">AS数据对比分析</h4>
+                <div class="panel-body text-center">
+                  <!-- <canvas id="pie2as" height="350" width="450"></canvas> -->
+                  <div style="height:280px;" id="pie2as"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-4 col-md-4 col-lg-4">
+              <div class="content-panel">
+                <h4 style="text-align: center;color: black;font-weight: bold;">DNS数据对比分析</h4>
+                <div class="panel-body text-center">
+                  <!-- <canvas id="pie3dns" height="350" width="450"></canvas> -->
+                  <div style="height:280px;" id="pie3dns"></div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        
+
+        
+          <!-- 以下为表格区 -->
+          
+      <!-- <section id="main-content">
+      <section class="wrapper"> -->
+        <!-- <h3><i class="fa fa-angle-right"></i> Responsive Table Examples</h3> -->
+        <div class="row mt">
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="content-panel">
+              <!-- <h4><i class="fa fa-angle-right"></i> Responsive Table</h4> -->
+              <section id="unseen">
+                <table class="table table-bordered table-striped table-condensed" style="color: black;font-weight: bold;font-size: 15px;">
+                  <thead>
+                    <tr>
+                      <th colspan="4" style="text-align: center;">HSS</th>
+                      <th colspan="4" style="text-align: center;">AS</th>
+                      <th colspan="4" style="text-align: center;">DNS</th>
+                    </tr>
+                    <tr>
+                      <th colspan="4" style="text-align: center;">总数:{%HSS_DATA%}</th>
+                      <th colspan="4" style="text-align: center;">总数:{%AS_DATA%}</th>
+                      <th colspan="4" style="text-align: center;">总数:{%ENUMDNS_DATA%}</th>
+                    </tr>
+                  </thead>
+                  <tbody >
+                    <tr>
+                      <td>全部匹配</td>
+                      <td>AS有DNS无</td>
+                      <td>DNS有AS无</td>
+                      <td>AS/DNS皆无</td>
+                      <td>全部匹配</td>
+                      <td>HSS有DNS无</td>
+                      <td>DNS有HSS无</td>
+                      <td>HSS/DNS暂无</td>
+                      <td>全部匹配</td>
+                      <td>AS有HSS无</td>
+                      <td>HSS有AS无</td>
+                      <td>AS/HSS皆无</td>
+                    </tr>
+                    <tr>
+                      <td  class="numeric">{%ALL_FIX%}</td>
+                      <td  class="numeric">{%HSS_AS_FIX%}</td>
+                      <td  class="numeric">{%HSS_ENUMDNS_FIX%}</td>
+                      <td  class="numeric">{%HSS_ONLY%}</td>
+                      <td  class="numeric">{%ALL_FIX%}</td>
+                      <td  class="numeric">{%HSS_AS_FIX%}</td>
+                      <td  class="numeric">{%AS_ENUMDNS_FIX%}</td>
+                      <td  class="numeric">{%AS_ONLY%}</td>
+                      <td  class="numeric">{%ALL_FIX%}</td>
+                      <td  class="numeric">{%AS_ENUMDNS_FIX%}</td>
+                      <td  class="numeric">{%HSS_ENUMDNS_FIX%}</td>
+                      <td  class="numeric">{%ENUMDNS_ONLY%}</td>
+
+                    </tr>
+                    <tr>
+                      <td ><a class="btn btn-success btn-sm" href="test.txt" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+
+                    </tr>
+
+                  </tbody>
+                </table>
+              </section>
+            </div>
+            <!-- /content-panel -->
+          </div>
+          <!-- /col-lg-4 -->
+        </div>
+
+
+        <div class="row mt">
+            <div class="col-lg-12">
+                <div class="content-panel">
+                    <div class="row">
+                        <div class="col-lg-12">
+                    <h4 style="color: black;font-weight: bold;margin: 10px 30px;">一号双终端数据</h4>
+
+                    <div class="col-sm-4 col-md-4 col-lg-1" style="background-color:#61A0A8;margin: 5px 10px ;height:75px,width:50px;border-radius: 5px;box-shadow:0px 3px 2px #aab2bd;">
+                        <div style="margin:0px 20px;padding:5px 0px 0px 0px;">
+                            <span style="color:black;font-size: 15px;font-weight: bold;">总数</span>
+                        </div>                            
+                        <div style="color:white;font-size:28px;margin:0px 15px;">10000</div>
+                    </div>
+
+                    <div class="col-sm-4 col-md-4 col-lg-1" style="background-color:#61A0A8;margin: 5px 10px ;height:75px,width:50px;border-radius: 5px;box-shadow:0px 3px 2px #aab2bd;">
+                        <div style="margin:0px 20px;padding:5px 0px 0px 0px;">
+                            <span style="color:black;font-size: 15px;font-weight: bold;">主卡</span>
+                        </div>                            
+                        <div style="color:white;font-size:28px;margin:0px 15px;">10000</div>
+                    </div>
+
+                    <div class="col-sm-4 col-md-4 col-lg-1" style="background-color:#61A0A8;margin: 5px 10px ;height:75px,width:50px;border-radius: 5px;box-shadow:0px 3px 2px #aab2bd;">
+                        <div style="margin:0px 20px;padding:5px 0px 0px 0px;">
+                            <span style="color:black;font-size: 15px;font-weight: bold;">副卡</span>
+                        </div>                            
+                        <div style="color:white;font-size:28px;margin:0px 15px;">10000</div>
+                    </div>
+                </div>
+                </div>
+                    
+<!--                     <h4 style="display: inline-block;color: black;font-weight: bold;">总数：10000</h4>
+                    <h4 style="display: inline-block;color: black;font-weight: bold;">主卡：10000</h4>
+                    <h4 style="display: inline-block;color: black;font-weight: bold;">副卡：10000</h4> -->
+                    <div class="row">
+                    <div class="col-lg-12">
+                    <h4 style="color: black;font-weight: bold;">MCAP:</h4>
+                    <ul>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4501:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4502:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4503:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4504:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4505:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4506:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4507:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4508:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4509:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4510:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4511:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4512:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4513:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4514:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4515:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4516:1000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">4517:1000</li>
+
+
+
+                    </ul>
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-lg-12">
+                    <h4 style="color: black;font-weight: bold;">SIFC:</h4>
+                     <div class="col-lg-1" style="background-color:#61A0A8;margin: 5px 10px ;height:75px,width:50px;border-radius: 5px;box-shadow:0px 3px 2px #aab2bd;">
+                        <div style="margin:0px 20px;padding:5px 0px 0px 0px;">
+                            <span style="color:black;font-size: 15px;font-weight: bold;">100</span>
+                        </div>                            
+                        <div style="color:white;font-size:28px;margin:0px 15px;">10000</div>
+                    </div>
+                     <div class="col-lg-1" style="background-color:#61A0A8;margin: 5px 10px ;height:75px,width:50px;border-radius: 5px;box-shadow:0px 3px 2px #aab2bd;">
+                        <div style="margin:0px 20px;padding:5px 0px 0px 0px;">
+                            <span style="color:black;font-size: 15px;font-weight: bold;">200</span>
+                        </div>                            
+                        <div style="color:white;font-size:28px;margin:0px 15px;">10000</div>
+                    </div>
+                    <div class="col-lg-1" style="background-color:#61A0A8;margin: 5px 10px ;height:75px,width:50px;border-radius: 5px;box-shadow:0px 3px 2px #aab2bd;">
+                        <div style="margin:0px 20px;padding:5px 0px 0px 0px;">
+                            <span style="color:black;font-size: 15px;font-weight: bold;">300</span>
+                        </div>                            
+                        <div style="color:white;font-size:28px;margin:0px 15px;">10000</div>
+                    </div>
+<!--                     <ul>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">100:2000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">200:2000</li>
+                        <li style="display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;">300:3000</li>
+                    </ul> -->
+                </div>
+                </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /row -->
+<!--         </div> -->
+        <!-- page end-->
+      </section>
+<!--     </section> -->
+
+<!--   </section> -->
+  <!-- js placed at the end of the document so the pages load faster -->
+  <script src="lib/jquery/jquery.min.js"></script>
+  <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+  <script class="include" type="text/javascript" src="lib/jquery.dcjqaccordion.2.7.js"></script>
+  <script src="lib/jquery.scrollTo.min.js"></script>
+  <script src="lib/jquery.nicescroll.js" type="text/javascript"></script>
+  <!--common script for all pages-->
+  <script src="lib/common-scripts.js"></script>
+  <!--script for this page-->
+<!--   <script src="lib/chart-master/Chart.js"></script>
+  <script src="lib/chartjs-conf.js"></script>
+ -->  
+    <script src="lib/echarts/echarts.js"></script>
+          <script>
+
+        var PieChartHss = echarts.init(document.getElementById('pie1hss'));
+        var optionPieHss = {
+              tooltip:{
+                show:true,
+                trigger:'item',
+                // formatter: "{b} : {c}",
+                formatter : function(params){               
+                return  params.data.name + ' : ' + params.data.value;
+              }
+           },
+              legend: {
+                                x: 'center',
+                y: 'bottom',
+                // bottom:5,
+                // itemGap:20,
+                itemWidth:23,
+                // textStyle:{
+                //     fontSize: 12
+                // },
+                align:'left',
+                data:['全部匹配用户','AS有DNS无','DNS有AS无','AS/DNS皆无']
+
+                  },
+              series : [
+                  {
+                      name:'2G流量',
+                      type:'pie',
+                      radius : '70%',
+                      center: ['50%', '45%'],
+                      //data:[{name:'全部匹配用户',value:20},{name:'AS有DNS无',value:30},{name:'DNS有AS无',value:40},{name:'AS/DNS皆无',value:50},],
+                      data:[{name:'全部匹配用户',value:{%ALL_FIX%}},{name:'AS有DNS无',value:{%HSS_AS_FIX%}},{name:'DNS有AS无',value:{%HSS_ENUMDNS_FIX%}},{name:'AS/DNS皆无',value:{%HSS_ONLY%}}],
+                      itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },
+                      label: {
+                      normal: {
+                          show: true,
+                          position:'inside',
+                          formatter:'{d}%',
+                      },
+                      emphasis: {
+                          show: true
+                      }
+                    },
+
+                  }
+
+              ]
+    };
+
+        var PieChartAs = echarts.init(document.getElementById('pie2as'));
+        var optionPieAs = {
+        tooltip : {
+        trigger: 'item',
+        formatter: "{b} : {c}"
+     },
+
+    legend: {
+           
+            x : 'center',
+            y : 'bottom',
+            itemWidth:23,
+            data:['全部匹配用户','HSS有DNS无','DNS有HSS无','HSS/DNS皆无']
+
+        },
+        series : [
+            {
+                name:'2G流量',
+                type:'pie',
+                radius : '70%',
+                center: ['50%', '45%'],
+                //data:[{name:'全部匹配用户',value:20},{name:'HSS有DNS无',value:30},{name:'DNS有HSS无',value:40},{name:'HSS/DNS皆无',value:50},],
+                data:[{name:'全部匹配用户',value:{%ALL_FIX%}},{name:'HSS有DNS无',value:{%HSS_AS_FIX%}},{name:'DNS有HSS无',value:{%AS_ENUMDNS_FIX%}},{name:'HSS/DNS皆无',value:{%AS_ONLY%}},],
+                itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                },                
+                label: {
+                normal: {
+                    show: true,
+                    position:'inside',
+                    formatter:'{d}%',
+                },
+                emphasis: {
+                    show: true
+                }
+            },
+            }
+
+        ]
+    };
+
+
+
+        var PieChartDns = echarts.init(document.getElementById('pie3dns'));
+        var optionPieDns = {
+        tooltip : {
+        trigger: 'item',
+        formatter: "{b} : {c}"
+     },
+
+    legend: {
+           
+            x : 'center',
+            y : 'bottom',
+            itemWidth:23,
+            data:['全部匹配用户','AS有HSS无','HSS有AS无','AS/HSS皆无']
+
+        },
+        series : [
+            {
+                name:'2G流量',
+                type:'pie',
+                radius : '70%',
+                center: ['50%', '45%'],
+                //data:[{name:'全部匹配用户',value:20},{name:'AS有HSS无',value:30},{name:'HSS有AS无',value:40},{name:'AS/HSS皆无',value:50},],
+                data:[{name:'全部匹配用户',value:{%ALL_FIX%}},{name:'AS有HSS无',value:{%AS_ENUMDNS_FIX%}},{name:'HSS有AS无',value:{%HSS_ENUMDNS_FIX%}},{name:'AS/HSS皆无',value:{%ENUMDNS_ONLY%}},],
+                itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                },                
+                label: {
+                normal: {
+                    show: true,
+                    position:'inside',
+                    formatter:'{d}%',
+                },
+                emphasis: {
+                    show: true
+                }
+            },
+
+            }
+
+        ]
+    };
+    // 为echarts对象加载数据 
+    PieChartHss.setOption(optionPieHss);
+    PieChartAs.setOption(optionPieAs);
+    PieChartDns.setOption(optionPieDns);
+          </script>
+
+
+
+</html>
+
