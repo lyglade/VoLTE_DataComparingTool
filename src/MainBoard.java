@@ -134,7 +134,7 @@ public class MainBoard {
 		
 		JLabel lblAs = new JLabel("HSS APN:");
 		lblAs.setFont(new Font("微软雅黑", Font.BOLD, 17));
-		lblAs.setBounds(31, 10, 54, 15);
+		lblAs.setBounds(31, 10, 97, 15);
 		frmVolte.getContentPane().add(lblAs);
 		
 		String[] JCBList2 = { "华为", "中兴"};
@@ -245,13 +245,14 @@ public class MainBoard {
 			public void actionPerformed(ActionEvent e) {
 				ArrayList MSISDN=new ArrayList();
 				JFileChooser fd = new JFileChooser();
+				fd.setMultiSelectionEnabled(true);
 				RUN_path=qSQL.getConfig(1);
-				System.out.println(RUN_path);
+//				System.out.println(RUN_path);
 				if(RUN_path!=null) fd.setCurrentDirectory(new File(RUN_path));
 				if(fd.showOpenDialog(null)==fd.APPROVE_OPTION) {
 				File f = fd.getSelectedFile();
 				if(f != null){
-			        int i = 0;
+//			        int i = 0;
 			        int write = 0;
 				    FileInputStream fis = null;
 				    InputStreamReader isr = null;
@@ -266,10 +267,10 @@ public class MainBoard {
 					                                            // InputStreamReader的对象
 					            while ((str = br.readLine()) != null) {
 					                if(comboBox_1.getSelectedIndex()==0) {     //如果是华为HSS APN，进行数据处理
-					                	MSISDN.add(str.substring(7,18))  ;
+					                	MSISDN.add(str.substring(2,13))  ;
 					                }
 					                else {              						//如果室中兴HSS APN，进行数据处理
-					                	MSISDN.add(str.substring(7,18)) ;
+					                	MSISDN.add(str.substring(19,30)) ;
 					                }
 									write++;
 									if(write%100==0) System.out.println("write="+write);
