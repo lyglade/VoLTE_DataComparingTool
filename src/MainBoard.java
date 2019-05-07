@@ -250,31 +250,52 @@ public class MainBoard {
 //				System.out.println(RUN_path);
 				if(RUN_path!=null) fd.setCurrentDirectory(new File(RUN_path));
 				if(fd.showOpenDialog(null)==fd.APPROVE_OPTION) {
-				File f = fd.getSelectedFile();
-				if(f != null){
-//			        int i = 0;
+				File[] f= fd.getSelectedFiles();
+				if(f.length != 0){
+			        int i = 0;
 			        int write = 0;
 				    FileInputStream fis = null;
 				    InputStreamReader isr = null;
 					    BufferedReader br = null; // 用于包装InputStreamReader,提高处理性能。因为BufferedReader有缓冲的，而InputStreamReader没有。
 					        try {
-					            String str = "";
-					            fis = new FileInputStream(f);// FileInputStream
-					            
-					            // 从文件系统中的某个文件中获取字节
-					            isr = new InputStreamReader(fis);// InputStreamReader 是字节流通向字符流的桥梁,
-					            br = new BufferedReader(isr);// 从字符输入流中读取文件中的内容,封装了一个new
-					                                            // InputStreamReader的对象
-					            while ((str = br.readLine()) != null) {
-					                if(comboBox_1.getSelectedIndex()==0) {     //如果是华为HSS APN，进行数据处理
-					                	MSISDN.add(str.substring(2,13))  ;
-					                }
-					                else {              						//如果室中兴HSS APN，进行数据处理
-					                	MSISDN.add(str.substring(19,30)) ;
-					                }
-									write++;
-									if(write%100==0) System.out.println("write="+write);
+					            if(comboBox_1.getSelectedIndex()==0) {     //选择为华为的HSS
+					            	for(i=0;i<f.length;i++) {
+					            		String str = "";
+					            		fis = new FileInputStream(f[i]);// FileInputStream
+					            		// 从文件系统中的某个文件中获取字节
+							            isr = new InputStreamReader(fis);// InputStreamReader 是字节流通向字符流的桥梁,
+							            br = new BufferedReader(isr);// 从字符输入流中读取文件中的内容,封装了一个new
+							            // InputStreamReader的对象
+							            while ((str = br.readLine()) != null) {
+							            	if(str.substring(0,3).equals("460")) {
+							                	MSISDN.add(str.substring(19,30))  ;
+							                	write++;
+							                	if(write%100==0) System.out.println("write="+write);
+							            	}
+							            }
+							            
+					            	}
 					            }
+					            else if(comboBox_1.getSelectedIndex()==1){//选择为中兴的HSS
+					            	for(i=0;i<f.length;i++) {
+					            		String str = "";
+					            		fis = new FileInputStream(f[i]);// FileInputStream
+					            		// 从文件系统中的某个文件中获取字节
+							            isr = new InputStreamReader(fis);// InputStreamReader 是字节流通向字符流的桥梁,
+							            br = new BufferedReader(isr);// 从字符输入流中读取文件中的内容,封装了一个new
+							            // InputStreamReader的对象
+							            while ((str = br.readLine()) != null) {
+							            	if(str.startsWith("86")){
+							                	MSISDN.add(str.substring(2,13))  ;
+							                	write++;
+							                	if(write%100==0) System.out.println("write="+write);
+							            	}
+							            }
+							            
+					            	}
+					            }
+					                                            
+
 					            if(qSQL.IsConnected()!=true) qSQL.reConnect();
 					            int APN_result=qSQL.insertAPNDATA(MSISDN);
 					            if(APN_result==write) {
