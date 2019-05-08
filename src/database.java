@@ -98,9 +98,9 @@ public class database {
     	int i;
     	try {
     		iCon.setAutoCommit(false);
-    		String iSql1="DELETE FROM APN_DATA;";
-    		this.iPS=iCon.prepareStatement(iSql1);
-    		iPS.executeUpdate();	
+//    		String iSql1="DELETE FROM APN_DATA;";
+//    		this.iPS=iCon.prepareStatement(iSql1);
+//    		iPS.executeUpdate();	
 //			iSql1="insert into APN_DATA (\'msisdn\') values(?);";
 //			this.iPS=iCon.prepareStatement(iSql1);
 			String[] MS_string = (String[])MSISDN.toArray(new String[MSISDN.size()]); 
