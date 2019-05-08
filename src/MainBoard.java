@@ -223,6 +223,22 @@ public class MainBoard {
 		frmVolte.getContentPane().add(label_2);
 		
 		JButton button_3 = new JButton("\u5BFC\u5165\u7701\u5185\u53F7\u6BB5");
+		button_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fd = new JFileChooser();
+				RUN_path=qSQL.getConfig(1);
+				if(RUN_path!="") fd.setCurrentDirectory(new File(RUN_path));
+				if(fd.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
+					File f = fd.getSelectedFile();
+					if(f != null){
+						
+						
+					}
+				}
+				
+				
+			}
+		});
 		button_3.setBounds(31, 245, 113, 23);
 		frmVolte.getContentPane().add(button_3);
 		
@@ -243,13 +259,13 @@ public class MainBoard {
 		frmVolte.getContentPane().add(btnNewButton_6);
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ArrayList MSISDN=new ArrayList();
+				ArrayList<String> MSISDN=new ArrayList<String>();
 				JFileChooser fd = new JFileChooser();
 				fd.setMultiSelectionEnabled(true);
 				RUN_path=qSQL.getConfig(1);
 //				System.out.println(RUN_path);
 				if(RUN_path!=null) fd.setCurrentDirectory(new File(RUN_path));
-				if(fd.showOpenDialog(null)==fd.APPROVE_OPTION) {
+				if(fd.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
 				File[] f= fd.getSelectedFiles();
 				if(f.length != 0){
 			        int i = 0;
@@ -342,14 +358,14 @@ public class MainBoard {
 		});
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ArrayList MSISDN=new ArrayList();
+				ArrayList<String> MSISDN=new ArrayList<String>();
 				JFileChooser fd = new JFileChooser();
 				RUN_path=qSQL.getConfig(1);
 				if(RUN_path!="") fd.setCurrentDirectory(new File(RUN_path));
-				if(fd.showOpenDialog(null)==fd.APPROVE_OPTION) {
+				if(fd.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
 				File f = fd.getSelectedFile();
 				if(f != null){
-			        int i = 0;
+//			        int i = 0;
 			        int write = 0;
 				    FileInputStream fis = null;
 				    InputStreamReader isr = null;
@@ -449,7 +465,7 @@ public class MainBoard {
 				RUN_path=qSQL.getConfig(1);
 		        try {
 				if(RUN_path!=null&&RUN_path!="") fd.setCurrentDirectory(new File(RUN_path));
-				if(fd.showOpenDialog(null)==fd.APPROVE_OPTION) {
+				if(fd.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
 				File[] f= fd.getSelectedFiles();
 				if(f.length != 0){
 			        int i = 0;

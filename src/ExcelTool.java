@@ -11,8 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -121,44 +124,63 @@ public class ExcelTool {
 	    }
 	    
 	    
-	    // 去读Excel的方法readExcel，该方法的入口参数为一个File对象
-	    public List readExcel(File file) {
+	  //读取excel
+	    public static Workbook readExcel(String filePath){
+	        Workbook wb = null;
+	        if(filePath==null){
+	            return null;
+	        }
+	        String extString = filePath.substring(filePath.lastIndexOf("."));
+	        InputStream is = null;
 	        try {
-	            // 创建输入流，读取Excel
-	            InputStream is = new FileInputStream(file.getAbsolutePath());
-	            // jxl提供的Workbook类
-	            jxl.Workbook wb = jxl.Workbook.getWorkbook(is);
-	            // Excel的页签数量
-	            int sheet_size = wb.getNumberOfSheets();
-	            for (int index = 0; index < sheet_size; index++) {
-	                List<List> outerList=new ArrayList<List>();
-	                // 每个页签创建一个Sheet对象
-	                jxl.Sheet sheet = wb.getSheet(index);
-	                // sheet.getRows()返回该页的总行数
-	                for (int i = 0; i < sheet.getRows(); i++) {
-	                    List innerList=new ArrayList();
-	                    // sheet.getColumns()返回该页的总列数
-	                    for (int j = 0; j < sheet.getColumns(); j++) {
-	                        String cellinfo = sheet.getCell(j, i).getContents();
-	                        if(cellinfo.isEmpty()){
-	                            continue;
-	                        }
-	                        innerList.add(cellinfo);
-	                        System.out.print(cellinfo);
-	                    }
-	                    outerList.add(i, innerList);
-	                    System.out.println();
-	                }
-	                return outerList;
+	            is = new FileInputStream(filePath);
+	            if(".xls".equals(extString)){
+	                return wb = new HSSFWorkbook(is);
+	            }else if(".xlsx".equals(extString)){
+	                return wb = new XSSFWorkbook(is);
+	            }else{
+	                return wb = null;
 	            }
+	            
 	        } catch (FileNotFoundException e) {
-	            e.printStackTrace();
-	        } catch (BiffException e) {
 	            e.printStackTrace();
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
-	        return null;
+	        return wb;
 	    }
+	    public static Object getCellFormatValue(Cell cell){
+	        Object cellValue = null;
+	        if(cell!=null){
+	            //判断cell类型
+	            switch(cell.getCellType()){
+	            case NUMERIC:{
+	                cellValue = String.valueOf(cell.getNumericCellValue());
+	                break;
+	            }
+	            case FORMULA:{
+	                //判断cell是否为日期格式
+	                if(DateUtil.isCellDateFormatted(cell)){
+	                    //转换为日期格式YYYY-mm-dd
+	                    cellValue = cell.getDateCellValue();
+	                }else{
+	                    //数字
+	                    cellValue = String.valueOf(cell.getNumericCellValue());
+	                }
+	                break;
+	            }
+	            case STRING:{
+	                cellValue = cell.getRichStringCellValue().getString();
+	                break;
+	            }
+	            default:
+	                cellValue = "";
+	            }
+	        }else{
+	            cellValue = "";
+	        }
+	        return cellValue;
+	    }
+
 
 }
