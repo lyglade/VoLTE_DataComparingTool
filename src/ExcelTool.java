@@ -124,32 +124,95 @@ public class ExcelTool {
 	    
 	    
 	  //读取excel
-	    public static void readExcel(File file,database qSQL){
+	    public static List<Map<String,String>> readExcel(File file,int ReadInd)throws IOException,FileNotFoundException  {
 	    	String filePath=file.getAbsolutePath();
 	        Workbook wb = null;
+	        Sheet sheet = null;
+	        Row row = null;
+	        List<Map<String,String>> list = null;
+	        String cellData=null;
 	        if(filePath!=null){
 		        String extString = filePath.substring(filePath.lastIndexOf("."));
 		        InputStream is = null;
-		        try {
-		            is = new FileInputStream(filePath);
-		            if(".xls".equals(extString)){
-		                 wb = new HSSFWorkbook(is);
-		            }else if(".xlsx".equals(extString)){
-		                 wb = new XSSFWorkbook(is);
-		            }else{
-		                 wb = null;
+
+	            is = new FileInputStream(filePath);
+	            if(".xls".equals(extString)){
+	                 wb = new HSSFWorkbook(is);
+	            }else if(".xlsx".equals(extString)){
+	                 wb = new XSSFWorkbook(is);
+	            }else{
+	                 wb = null;
+	            }
+	            
+	            //获取最大行数
+	            int rownum = sheet.getPhysicalNumberOfRows();
+	            //获取第一行
+	            row = sheet.getRow(0);
+	            //获取最大列数
+	            int colnum = row.getPhysicalNumberOfCells();
+	            
+	            
+	            if(ReadInd==1) {
+		          //获取 City sheet
+		            sheet=wb.getSheet("City");
+		            String columns[] = {"City","NumPrefix","HSS"};
+			          //从第二行开始，因为第一行是标题
+		            for (int i = 1; i<rownum; i++) {
+		                Map<String,String> map = new HashMap<String,String>();
+		                row = sheet.getRow(i);
+		                if(row !=null){
+		                    for (int j=0;j<colnum;j++){
+		                        cellData = (String) getCellFormatValue(row.getCell(j));
+								map.put(columns[j], cellData);
+		                    }
+		                }else{
+		                    break;
+		                }
+		                list.add(map);
 		            }
-		            
-		            
-		            
-		            
-		            
-		        } catch (FileNotFoundException e) {
-		            e.printStackTrace();
-		        } catch (IOException e) {
-		            e.printStackTrace();
-		        }
+	            }else if(ReadInd==2) {
+	  	          //获取 HSS sheet
+		            sheet=wb.getSheet("HSS");
+		            String columns[] = {"HSS","Manufacturer","IP","USER","PASSWD","PORT","PROMPT"};
+			          //从第二行开始，因为第一行是标题
+		            for (int i = 1; i<rownum; i++) {
+		                Map<String,String> map = new HashMap<String,String>();
+		                row = sheet.getRow(i);
+		                if(row !=null){
+		                    for (int j=0;j<colnum;j++){
+		                        cellData = (String) getCellFormatValue(row.getCell(j));
+								map.put(columns[j], cellData);
+		                    }
+		                }else{
+		                    break;
+		                }
+		                list.add(map);
+		            }
+	            }else if(ReadInd==3){
+	  	          //获取 City sheet
+		            sheet=wb.getSheet("Numlist");
+		            String columns[] = {"Province","City","AreaCode","Number"};	
+			          //从第二行开始，因为第一行是标题
+		            for (int i = 1; i<rownum; i++) {
+		                Map<String,String> map = new HashMap<String,String>();
+		                row = sheet.getRow(i);
+		                if(row !=null){
+		                    for (int j=0;j<colnum;j++){
+		                        cellData = (String) getCellFormatValue(row.getCell(j));
+								map.put(columns[j], cellData);
+		                    }
+		                }else{
+		                    break;
+		                }
+		                list.add(map);
+		            }
+	            }else {
+	            	return null;
+	            }
+
+
 	        }
+			return list;
 	    }
 	    public static Object getCellFormatValue(Cell cell){
 	        Object cellValue = null;

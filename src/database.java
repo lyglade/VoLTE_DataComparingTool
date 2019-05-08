@@ -3,6 +3,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class database {
 //	private String iHost;
@@ -225,6 +227,56 @@ public class database {
 			return 0;
 		}
 		return j;
+    }
+    
+    public void insertCity(List<Map<String,String>> list) throws SQLException {
+		for (int i = 0; i < list.size(); i++) {
+			Map map=list.get(i);
+    		iCon.setAutoCommit(false);
+    		String iSql1="insert into City (\'City\',\'NumPrefix\',\'HSS\') values(?,?,?);";
+    		this.iPS=iCon.prepareStatement(iSql1);
+    		iPS.setString(1, map.get("City").toString());
+    		iPS.setString(2, map.get("NumPrefix").toString());
+    		iPS.setString(3, map.get("HSS").toString());
+    		iPS.addBatch();
+    		iPS.executeBatch();
+		 }
+    	
+    }
+    
+    public void insertHSS(List<Map<String,String>> list) throws SQLException {
+		for (int i = 0; i < list.size(); i++) {
+			Map map=list.get(i);
+    		iCon.setAutoCommit(false);
+    		String iSql1="insert into HSS (\'HSS\',\'Manufacturer\',\'IP\',\'USER\',\'PASSWD\',\'PORT\',\'PROMPT\') values(?,?,?,?,?,?,?);";
+    		this.iPS=iCon.prepareStatement(iSql1);
+    		iPS.setString(1, map.get("HSS").toString());
+    		iPS.setString(2, map.get("Manufacturer").toString());
+    		iPS.setString(3, map.get("IP").toString());
+    		iPS.setString(1, map.get("USER").toString());
+    		iPS.setString(2, map.get("PASSWD").toString());
+    		iPS.setString(3, map.get("PORT").toString());
+    		iPS.setString(3, map.get("PROMPT").toString());
+    		iPS.addBatch();
+    		iPS.executeBatch();
+		 }
+    	
+    }
+    
+    public void insertNumlist(List<Map<String,String>> list) throws SQLException {
+		for (int i = 0; i < list.size(); i++) {
+			Map map=list.get(i);
+    		iCon.setAutoCommit(false);
+    		String iSql1="insert into Numlist (\'Province\',\'City\',\'AreaCode\',\'Number\') values(?,?,?,?);";
+    		this.iPS=iCon.prepareStatement(iSql1);
+    		iPS.setString(1, map.get("Province").toString());
+    		iPS.setString(2, map.get("City").toString());
+    		iPS.setString(3, map.get("AreaCode").toString());
+    		iPS.setString(1, map.get("Number").toString());
+    		iPS.addBatch();
+    		iPS.executeBatch();
+		 }
+    	
     }
     
     public void DoCommit() {

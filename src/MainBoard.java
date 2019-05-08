@@ -36,6 +36,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -232,7 +233,27 @@ public class MainBoard {
 					File f = fd.getSelectedFile();
 					if(f != null){
 						ExcelTool excelTool=new ExcelTool();
-						excelTool.readExcel(f, qSQL);
+						try {
+							List<Map<String,String>> list = excelTool.readExcel(f, 1);
+							qSQL.insertCity(list);	 
+							list.clear();	 
+							list = excelTool.readExcel(f, 2);
+							qSQL.insertHSS(list);	
+							list.clear();	
+							list = excelTool.readExcel(f, 3);
+							qSQL.insertNumlist(list);	
+							
+							
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch(SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();	
+						}
 						
 						
 					}
