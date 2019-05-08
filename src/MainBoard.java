@@ -231,6 +231,8 @@ public class MainBoard {
 				if(fd.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
 					File f = fd.getSelectedFile();
 					if(f != null){
+						ExcelTool excelTool=new ExcelTool();
+						excelTool.readExcel(f, qSQL);
 						
 						
 					}

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -125,29 +124,32 @@ public class ExcelTool {
 	    
 	    
 	  //∂¡»°excel
-	    public static Workbook readExcel(String filePath){
+	    public static void readExcel(File file,database qSQL){
+	    	String filePath=file.getAbsolutePath();
 	        Workbook wb = null;
-	        if(filePath==null){
-	            return null;
+	        if(filePath!=null){
+		        String extString = filePath.substring(filePath.lastIndexOf("."));
+		        InputStream is = null;
+		        try {
+		            is = new FileInputStream(filePath);
+		            if(".xls".equals(extString)){
+		                 wb = new HSSFWorkbook(is);
+		            }else if(".xlsx".equals(extString)){
+		                 wb = new XSSFWorkbook(is);
+		            }else{
+		                 wb = null;
+		            }
+		            
+		            
+		            
+		            
+		            
+		        } catch (FileNotFoundException e) {
+		            e.printStackTrace();
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
 	        }
-	        String extString = filePath.substring(filePath.lastIndexOf("."));
-	        InputStream is = null;
-	        try {
-	            is = new FileInputStream(filePath);
-	            if(".xls".equals(extString)){
-	                return wb = new HSSFWorkbook(is);
-	            }else if(".xlsx".equals(extString)){
-	                return wb = new XSSFWorkbook(is);
-	            }else{
-	                return wb = null;
-	            }
-	            
-	        } catch (FileNotFoundException e) {
-	            e.printStackTrace();
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
-	        return wb;
 	    }
 	    public static Object getCellFormatValue(Cell cell){
 	        Object cellValue = null;
