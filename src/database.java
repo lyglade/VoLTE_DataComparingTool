@@ -42,16 +42,16 @@ public class database {
 	    	  iStmt.executeUpdate("create table HSS_ONLY(msisdn varchar(15))");//建立ENUMDNS_HSS匹配记录表
 	    	  iStmt.executeUpdate("create table ENUMDNS_ONLY(msisdn varchar(15))");//建立ENUMDNS_APN匹配记录表
 	    	  iStmt.executeUpdate("create table APN_ONLY(msisdn varchar(15))");//建立APN_HSS匹配记录表
-	    	  iStmt.executeUpdate("create table HSS (HSS varchar(10),Manufacturer varchar(10))");//建立hss表
+	    	  iStmt.executeUpdate("create table HSS (HSS varchar(10),Manufacturer varchar(10),IP varchar(15),USER varchar(15), PASSWD varchar(15),PORT varchar(15),PROMPT varchar(15))");//建立hss表
 	    	  iStmt.executeUpdate("create table City(City varchar(15),NumPrefix varchar(10),HSS varchar(10))");//建立CITY表
-	    	  iStmt.executeUpdate("create table Numlist(Province varchar(15),City varchar(15),AreaCode varchar(10), Num varchar(15))");//建立numlist表	    	  
+	    	  iStmt.executeUpdate("create table Numlist(Province varchar(15),City varchar(15),AreaCode varchar(10), Number varchar(15))");//建立numlist表	    	  
 	    	  iStmt.executeUpdate("create table APP_CONFIG (ID varchar(10),CONFIG_STR varchar(300))");
 	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'1\')");   //APP_CONFIG表中，记录打开文件的目录位置
 	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'2\')");   //APP_CONFIG表中，记录APN label的内容
 	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'3\')");   //APP_CONFIG表中，记录ENUMDNS label的内容
 	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'4\')");   //APP_CONFIG表中，记录HSS label的内容
 	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'5\')");   //APP_CONFIG表中，记录HSS的导入数据条数
-	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'6\')");   //APP_CONFIG表中，备用
+	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'6\')");   //APP_CONFIG表中，记录APN的导入数据条数
 	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'7\')");   //APP_CONFIG表中，备用
 	    	  iStmt.executeUpdate("INSERT INTO APP_CONFIG (\'ID\') values(\'8\')");   //APP_CONFIG表中，备用
           }	      
@@ -230,6 +230,8 @@ public class database {
     }
     
     public void insertCity(List<Map<String,String>> list) throws SQLException {
+    	if(!IsConnected()) this.reConnect();
+		iStmt.executeUpdate("DELETE FROM City;");
 		for (int i = 0; i < list.size(); i++) {
 			Map map=list.get(i);
     		iCon.setAutoCommit(false);
@@ -245,6 +247,8 @@ public class database {
     }
     
     public void insertHSS(List<Map<String,String>> list) throws SQLException {
+    	if(!IsConnected()) this.reConnect();
+		iStmt.executeUpdate("DELETE FROM HSS;");
 		for (int i = 0; i < list.size(); i++) {
 			Map map=list.get(i);
     		iCon.setAutoCommit(false);
@@ -253,10 +257,10 @@ public class database {
     		iPS.setString(1, map.get("HSS").toString());
     		iPS.setString(2, map.get("Manufacturer").toString());
     		iPS.setString(3, map.get("IP").toString());
-    		iPS.setString(1, map.get("USER").toString());
-    		iPS.setString(2, map.get("PASSWD").toString());
-    		iPS.setString(3, map.get("PORT").toString());
-    		iPS.setString(3, map.get("PROMPT").toString());
+    		iPS.setString(4, map.get("USER").toString());
+    		iPS.setString(5, map.get("PASSWD").toString());
+    		iPS.setString(6, map.get("PORT").toString());
+    		iPS.setString(7, map.get("PROMPT").toString());
     		iPS.addBatch();
     		iPS.executeBatch();
 		 }
@@ -264,6 +268,8 @@ public class database {
     }
     
     public void insertNumlist(List<Map<String,String>> list) throws SQLException {
+    	if(!IsConnected()) this.reConnect();
+		iStmt.executeUpdate("DELETE FROM Numlist;");
 		for (int i = 0; i < list.size(); i++) {
 			Map map=list.get(i);
     		iCon.setAutoCommit(false);
@@ -272,7 +278,7 @@ public class database {
     		iPS.setString(1, map.get("Province").toString());
     		iPS.setString(2, map.get("City").toString());
     		iPS.setString(3, map.get("AreaCode").toString());
-    		iPS.setString(1, map.get("Number").toString());
+    		iPS.setString(4, map.get("Number").toString());
     		iPS.addBatch();
     		iPS.executeBatch();
 		 }
@@ -337,7 +343,7 @@ public class database {
 			String RSrecord=null;
 			iRS= iStmt.executeQuery("SELECT msisdn FROM APN_DATA");
 			System.out.println(iRS.getMetaData());
-			RSrecord=iRS.getString(1);
+//			if(iRS.isAfterLast()!=true)RSrecord=iRS.getString(1);
 			while(iRS.next()) {
 				RSrecord=iRS.getString(1);
 				fps.write(RSrecord.getBytes());
@@ -349,7 +355,7 @@ public class database {
 			RSrecord=null;
 			iRS= iStmt.executeQuery("SELECT msisdn FROM ENUMDNS_DATA");
 			System.out.println(iRS.getMetaData());
-			RSrecord=iRS.getString(1);
+//			if(iRS.isAfterLast()!=true)RSrecord=iRS.getString(1);
 			while(iRS.next()) {
 				RSrecord=iRS.getString(1);
 				fps.write(RSrecord.getBytes());
@@ -362,7 +368,7 @@ public class database {
 			RSrecord=null;
 			iRS= iStmt.executeQuery("SELECT msisdn FROM APN_ENUMDNS");
 			System.out.println(iRS.getMetaData());
-			RSrecord=iRS.getString(1);
+//			if(iRS.isAfterLast()!=true)RSrecord=iRS.getString(1);
 			while(iRS.next()) {
 				RSrecord=iRS.getString(1);
 				fps.write(RSrecord.getBytes());
@@ -486,6 +492,40 @@ public class database {
 			System.out.println(iRS.getMetaData());
 			while(iRS.next()) {
 				RSrecord=iRS.getString(1) ;
+				fps.write(RSrecord.getBytes());
+				fps.write("\r\n".getBytes());
+			}
+			fps.close();
+			
+			fps=new FileOutputStream ("d:\\City.txt",false);
+			RSrecord=null;
+			iRS= iStmt.executeQuery("SELECT * FROM City");
+			System.out.println(iRS.getMetaData());
+			while(iRS.next()) {
+				RSrecord=iRS.getString(1) + " " +iRS.getString(2) + " " +iRS.getString(3) ;
+				fps.write(RSrecord.getBytes());
+				fps.write("\r\n".getBytes());
+			}
+			fps.close();
+			
+			
+			fps=new FileOutputStream ("d:\\HSS.txt",false);
+			RSrecord=null;
+			iRS= iStmt.executeQuery("SELECT * FROM HSS");
+			System.out.println(iRS.getMetaData());
+			while(iRS.next()) {
+				RSrecord=iRS.getString(1) + " " +iRS.getString(2) + " " +iRS.getString(3)  + " "+iRS.getString(4) + " " +iRS.getString(5) + " " +iRS.getString(6)  + " "+iRS.getString(7) ;
+				fps.write(RSrecord.getBytes());
+				fps.write("\r\n".getBytes());
+			}
+			fps.close();
+			
+			fps=new FileOutputStream ("d:\\Numlist.txt",false);
+			RSrecord=null;
+			iRS= iStmt.executeQuery("SELECT * FROM Numlist");
+			System.out.println(iRS.getMetaData());
+			while(iRS.next()) {
+				RSrecord=iRS.getString(1) + " " +iRS.getString(2) + " " +iRS.getString(3)  + " "+iRS.getString(4) ;
 				fps.write(RSrecord.getBytes());
 				fps.write("\r\n".getBytes());
 			}

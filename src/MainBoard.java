@@ -1,26 +1,21 @@
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.io.File;
 import java.lang.StringIndexOutOfBoundsException;
 
 import javax.swing.JFrame;
 
 import javax.swing.JComboBox;
-import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JRootPane;
 
 import java.awt.Font;
 import javax.swing.JSeparator;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
+
 
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
 import java.awt.event.ActionEvent;
 import java.sql.*;
 import java.io.BufferedReader;
@@ -39,10 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Window.Type;
-import java.awt.Dialog.ModalExclusionType;
-import java.awt.Frame;
 import java.awt.Toolkit;
 
 public class MainBoard {
@@ -50,9 +41,9 @@ public class MainBoard {
 	database qSQL=new database();
 	FileOutputStream  fops=null;
 	String RUN_path;
-	private static JFrame frmVolte;
+	private  JFrame frmVolte;
 	
-	public static  void SetFrameEnable() {
+	public void SetFrameEnable() {
 		frmVolte.setEnabled(true);
 		
 	}
@@ -164,9 +155,9 @@ public class MainBoard {
 		comboBox_2.setBounds(31, 105, 79, 23);
 		frmVolte.getContentPane().add(comboBox_2);
 		
-		JButton button_1 = new JButton("\u5BFC\u5165AS\u6570\u636E");
-		button_1.setBounds(120, 105, 113, 23);
-		frmVolte.getContentPane().add(button_1);
+		JButton btnenum = new JButton("\u5BFC\u5165ENUM\u6570\u636E");
+		btnenum.setBounds(120, 105, 113, 23);
+		frmVolte.getContentPane().add(btnenum);
 		
 		JButton button_2 = new JButton("\u793A\u4F8B\u6587\u4EF6");
 		button_2.setBounds(336, 105, 93, 23);
@@ -202,7 +193,7 @@ public class MainBoard {
 				qSQL.exportDATA();
 			}
 		});
-		btnNewButton_3.setBounds(10, 291, 93, 23);
+		btnNewButton_3.setBounds(31, 322, 93, 23);
 		frmVolte.getContentPane().add(btnNewButton_3);
 		
 		JButton btnNewButton_4 = new JButton("New button");
@@ -211,7 +202,7 @@ public class MainBoard {
 				qSQL.GetUnionSet();
 			}
 		});
-		btnNewButton_4.setBounds(140, 291, 93, 23);
+		btnNewButton_4.setBounds(152, 322, 93, 23);
 		frmVolte.getContentPane().add(btnNewButton_4);
 		
 		JSeparator separator_2 = new JSeparator();
@@ -223,45 +214,7 @@ public class MainBoard {
 		label_2.setBounds(31, 220, 54, 15);
 		frmVolte.getContentPane().add(label_2);
 		
-		JButton button_3 = new JButton("\u5BFC\u5165\u7701\u5185\u53F7\u6BB5");
-		button_3.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser fd = new JFileChooser();
-				RUN_path=qSQL.getConfig(1);
-				if(RUN_path!="") fd.setCurrentDirectory(new File(RUN_path));
-				if(fd.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
-					File f = fd.getSelectedFile();
-					if(f != null){
-						ExcelTool excelTool=new ExcelTool();
-						try {
-							List<Map<String,String>> list = excelTool.readExcel(f, 1);
-							qSQL.insertCity(list);	 
-							list.clear();	 
-							list = excelTool.readExcel(f, 2);
-							qSQL.insertHSS(list);	
-							list.clear();	
-							list = excelTool.readExcel(f, 3);
-							qSQL.insertNumlist(list);	
-							
-							
-						} catch (FileNotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch(SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();	
-						}
-						
-						
-					}
-				}
-				
-				
-			}
-		});
+		JButton button_3 = new JButton("\u5BFC\u5165\u914D\u7F6E\u4FE1\u606F");
 		button_3.setBounds(31, 245, 113, 23);
 		frmVolte.getContentPane().add(button_3);
 		
@@ -278,8 +231,18 @@ public class MainBoard {
 				
 			}
 		});
-		btnNewButton_6.setBounds(279, 291, 93, 23);
+		btnNewButton_6.setBounds(269, 322, 93, 23);
 		frmVolte.getContentPane().add(btnNewButton_6);
+		
+		JButton button_1 = new JButton("\u5BFC\u51FA\u914D\u7F6E\u4FE1\u606F");
+		button_1.setBounds(31, 278, 113, 23);
+		frmVolte.getContentPane().add(button_1);
+		
+		JLabel label_3 = new JLabel("\u5C1A\u672A\u5BFC\u5165\u6570\u636E");
+		label_3.setForeground(Color.RED);
+		label_3.setFont(new Font("微软雅黑", Font.BOLD, 12));
+		label_3.setBounds(84, 220, 364, 15);
+		frmVolte.getContentPane().add(label_3);
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ArrayList<String> MSISDN=new ArrayList<String>();
@@ -379,7 +342,7 @@ public class MainBoard {
 				qSQL.setConfig(1,fd.getCurrentDirectory().toString());
 			}
 		});
-		button_1.addActionListener(new ActionListener() {
+		btnenum.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ArrayList<String> MSISDN=new ArrayList<String>();
 				JFileChooser fd = new JFileChooser();
@@ -693,14 +656,110 @@ public class MainBoard {
 			}
 		});
 		
-		btnNewButton_5.addActionListener(new ActionListener() {
+		btnNewButton_5.addActionListener(new ActionListener() {    //删除hss 的IMS的data
 			public void actionPerformed(ActionEvent arg0) {
 				qSQL.delHSS_DATA();
 				qSQL.setConfig(5, "0");
 				label_1.setText("删除成功！");
 			}
 		});
+		
+		
+		button_3.addActionListener(new ActionListener() {           //导入配置文件
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fd = new JFileChooser();
+				RUN_path=qSQL.getConfig(1);
+				if((RUN_path!="") &&( RUN_path!=null))  fd.setCurrentDirectory(new File(RUN_path));
+				if(fd.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
+					File f = fd.getSelectedFile();
+					if(f != null){
+						try {
+							List<Map<String,String>> list = ExcelTool.readExcel(f, 1);
+							qSQL.insertCity(list);	 
+							list.clear();	 
+							list = ExcelTool.readExcel(f, 2);
+							qSQL.insertHSS(list);	
+							list.clear();	
+							list = ExcelTool.readExcel(f, 3);
+							qSQL.insertNumlist(list);	
+							
+							label_3.setText("配置数据导入成功！");
+							
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch(SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();	
+						}
+						
+						
+					}
+				}
+				
+				
+			}
+		});
+		
+		
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fd = new JFileChooser();
+				RUN_path=qSQL.getConfig(1);
+				if((RUN_path!="") &&( RUN_path!=null))  fd.setCurrentDirectory(new File(RUN_path));
+				fd.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				if(fd.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
+					File f = new File(fd.getSelectedFile().getPath()+"\\setup.xlsx");
+					if(f.exists()) {
+						JDialog dialog=new JDialog(frmVolte,"该文件已经存在，是否覆盖?",true);
+						dialog.setBounds(400, 200, 350, 80);//设置弹出对话框的位置和大小
+						dialog.setLayout(new FlowLayout());//设置弹出对话框的布局为流式布局
+						JLabel lab = new JLabel();//创建lab标签填写提示内容
+						lab.setText("文件已存在，是否覆盖？");
+						JButton okBut = new JButton("确定");//创建确定按钮
+						JButton noBut=new JButton("取消"); //创建取消按钮
+						dialog.add(lab);
+						dialog.add(okBut);
+						dialog.add(noBut);
+
+				        // 确定按钮监听器
+				        okBut.addActionListener(new ActionListener() {
+				            public void actionPerformed(ActionEvent e) {
+				            	dialog.setVisible(false);
+				            	
+				                
+				            }
+
+				        });
+						
+				        // 取消按钮监听器
+				        noBut.addActionListener(new ActionListener() {
+				            public void actionPerformed(ActionEvent e) {
+				                dialog.setVisible(false);
+				            }
+
+				        });
+						
+						dialog.setVisible(true);
+					}
+//					if(f != null){
+//						
+//					}
+					
+				}
+				
+				
+			}
+		});
+		
 	}
+	
+	
+	
+	
 	private void DataAnalyze() {
 		qSQL.Data_Analyze();
 		String[] ResultCount=qSQL.Analyze_Count();
@@ -770,5 +829,4 @@ public class MainBoard {
 		   return false;
 		 }
 	}
-	
 }

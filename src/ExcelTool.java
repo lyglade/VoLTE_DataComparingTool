@@ -5,11 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.poi.common.*;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -19,6 +21,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+//import org.apache.xmlbeans.*;
 
 //import jxl.read.biff.BiffException;
 
@@ -143,18 +146,20 @@ public class ExcelTool {
 	            }else{
 	                 wb = null;
 	            }
-	            
-	            //获取最大行数
-	            int rownum = sheet.getPhysicalNumberOfRows();
-	            //获取第一行
-	            row = sheet.getRow(0);
-	            //获取最大列数
-	            int colnum = row.getPhysicalNumberOfCells();
-	            
+	           
+
+	          //用来存放表中数据
+	            list = new ArrayList<Map<String,String>>();
 	            
 	            if(ReadInd==1) {
 		          //获取 City sheet
 		            sheet=wb.getSheet("City");
+		            //获取最大行数
+		            int rownum = sheet.getPhysicalNumberOfRows();
+		            //获取第一行
+		            row = sheet.getRow(0);
+		            //获取最大列数
+		            int colnum = row.getPhysicalNumberOfCells();
 		            String columns[] = {"City","NumPrefix","HSS"};
 			          //从第二行开始，因为第一行是标题
 		            for (int i = 1; i<rownum; i++) {
@@ -173,6 +178,12 @@ public class ExcelTool {
 	            }else if(ReadInd==2) {
 	  	          //获取 HSS sheet
 		            sheet=wb.getSheet("HSS");
+		            //获取最大行数
+		            int rownum = sheet.getPhysicalNumberOfRows();
+		            //获取第一行
+		            row = sheet.getRow(0);
+		            //获取最大列数
+		            int colnum = row.getPhysicalNumberOfCells();
 		            String columns[] = {"HSS","Manufacturer","IP","USER","PASSWD","PORT","PROMPT"};
 			          //从第二行开始，因为第一行是标题
 		            for (int i = 1; i<rownum; i++) {
@@ -191,6 +202,12 @@ public class ExcelTool {
 	            }else if(ReadInd==3){
 	  	          //获取 City sheet
 		            sheet=wb.getSheet("Numlist");
+		            //获取最大行数
+		            int rownum = sheet.getPhysicalNumberOfRows();
+		            //获取第一行
+		            row = sheet.getRow(0);
+		            //获取最大列数
+		            int colnum = row.getPhysicalNumberOfCells();
 		            String columns[] = {"Province","City","AreaCode","Number"};	
 			          //从第二行开始，因为第一行是标题
 		            for (int i = 1; i<rownum; i++) {
@@ -220,7 +237,11 @@ public class ExcelTool {
 	            //判断cell类型
 	            switch(cell.getCellType()){
 	            case NUMERIC:{
-	                cellValue = String.valueOf(cell.getNumericCellValue());
+//	                cellValue = String.valueOf(cell.getNumericCellValue());
+	                DecimalFormat df=new DecimalFormat();  //利用DecimalFormat类，实现数字规整
+	                df.setMaximumFractionDigits(0);    //设置小数位数为0
+	                df.setGroupingSize(0);
+	                cellValue=df.format(cell.getNumericCellValue());
 	                break;
 	            }
 	            case FORMULA:{

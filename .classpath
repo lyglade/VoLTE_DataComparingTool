@@ -9,5 +9,8 @@
 	<classpathentry kind="lib" path="E:/Users/HP/git/VoLTE_DataComparingTool/poi-4.0.1.jar"/>
 	<classpathentry kind="lib" path="E:/Users/HP/git/VoLTE_DataComparingTool/poi-ooxml-4.0.1.jar"/>
 	<classpathentry kind="lib" path="E:/Users/HP/git/VoLTE_DataComparingTool/poi-ooxml-schemas-4.0.1.jar"/>
+	<classpathentry kind="lib" path="E:/Users/HP/git/VoLTE_DataComparingTool/xmlbeans-3.1.0.jar"/>
+	<classpathentry kind="lib" path="E:/Users/HP/git/VoLTE_DataComparingTool/commons-collections4-4.3.jar"/>
+	<classpathentry kind="lib" path="E:/Users/HP/git/VoLTE_DataComparingTool/commons-compress-1.18.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
