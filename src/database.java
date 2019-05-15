@@ -3,6 +3,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +30,8 @@ public class database {
 	      iStmt=iCon.createStatement();   //创建连接对象，是Java的一个操作数据库的重要接口
 	      iRS =iCon.getMetaData().getTables(null, null, "APN_DATA", null);
 	      if (!iRS.next()) {
-	    	  iStmt.executeUpdate("create table APN_DATA(msisdn varchar(15))");//判断是否为空数据库文件，如果是空，则初始建立基础表
-	    	  iStmt.executeUpdate("create table ENUMDNS_DATA(msisdn varchar(15),domain varchar(100))");//建立ENUMDNS表
+	    	  iStmt.executeUpdate("create table APN_DATA(msisdn varchar(15),HSS varchar(15))");//判断是否为空数据库文件，如果是空，则初始建立基础表
+	    	  iStmt.executeUpdate("create table ENUMDNS_DATA(msisdn varchar(15),domain varchar(100),HSS varchar(15))");//建立ENUMDNS表
 	    	  iStmt.executeUpdate("create table HSS_DATA(HSS varchar(15),msisdn varchar(15),imsi varchar(15),impi varchar(100),cap_set varchar(4),YHDZD_ind varchar(5),YHDZD_num varchar(15))");
 	    	  iStmt.executeUpdate("create table APN_ENUMDNS(msisdn varchar(15))");//建立APN_ENUMDNS表
 	    	  iStmt.executeUpdate("create table IMPU(msisdn varchar(15),impu varchar(100))");//建立IMPU表
@@ -182,6 +183,29 @@ public class database {
 		}
 		
     }
+    
+    public void delAPN_DATA() {
+    	if(!IsConnected()) this.reConnect();
+		try {
+			iStmt.executeUpdate("DELETE FROM APN_DATA;");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+    } 
+    
+    public void delENUMDNS_DATA() {
+    	if(!IsConnected()) this.reConnect();
+		try {
+			iStmt.executeUpdate("DELETE FROM ENUMDNS_DATA;");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+    } 
+     
     public int insertHSS_DATA(String MSISDN,String IMSI,String IMPI,String YHDZD_IND,String YHDZD_NUM,String MCAP, ArrayList IMPU,ArrayList sIFC) {
     	if(!IsConnected()) this.reConnect();
     	int i,j;
@@ -313,6 +337,77 @@ public class database {
 		}
     }
     
+	public List<Map<String,String>> GetCity() {
+		List<Map<String,String>> list = new ArrayList<Map<String,String>>();
+		try {
+			if(!IsConnected()) this.reConnect();
+			iRS=iStmt.executeQuery("select * FROM City;");
+			while(iRS.next()){
+//	            for (int i = 0; i<3; i++) {
+	                Map<String,String> map = new HashMap<String,String>();
+	                map.put("City", iRS.getString(1));
+	                map.put("NumPrefix", iRS.getString(2));
+	                map.put("HSS", iRS.getString(3));
+	                list.add(map);
+//	            }
+			}
+			return list;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}		
+	}
+    
+	public List<Map<String,String>> GetHSS() {
+		List<Map<String,String>> list = new ArrayList<Map<String,String>>();
+		try {
+			if(!IsConnected()) this.reConnect();
+			iRS=iStmt.executeQuery("select * FROM HSS;");
+			while(iRS.next()){
+//	            for (int i = 0; i<3; i++) {
+	                Map<String,String> map = new HashMap<String,String>();
+	                map.put("HSS", iRS.getString(1));
+	                map.put("Manufacturer", iRS.getString(2));
+	                map.put("IP", iRS.getString(3));
+	                map.put("USER", iRS.getString(4));
+	                map.put("PASSWD", iRS.getString(5));
+	                map.put("PORT", iRS.getString(6));
+	                map.put("PROMPT", iRS.getString(7));
+	                list.add(map);
+//	            }
+			}
+			return list;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}		
+	}
+	
+	public List<Map<String,String>> GetNumlist() {
+		List<Map<String,String>> list = new ArrayList<Map<String,String>>();
+		try {
+			if(!IsConnected()) this.reConnect();
+			iRS=iStmt.executeQuery("select * FROM Numlist;");
+			while(iRS.next()){
+//	            for (int i = 0; i<3; i++) {
+	                Map<String,String> map = new HashMap<String,String>();
+	                map.put("Province", iRS.getString(1));
+	                map.put("City", iRS.getString(2));
+	                map.put("AreaCode", iRS.getString(3));
+	                map.put("Number", iRS.getString(4));
+	                list.add(map);
+//	            }
+			}
+			return list;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}		
+	}
+	
 	public void GetUnionSet() {		
 		try {
 			if(!IsConnected()) this.reConnect();
@@ -551,7 +646,7 @@ public class database {
     			result =iRS.getString(2);
     			System.out.println(result);
     		}
-    		if(ItemNumber==5&&result==null) result="0";
+    		if((ItemNumber==6||ItemNumber==5)&&result==null) result="0";  //如果ITEM是第5或者6项，需要考虑值是null的情况返回0
     		return result; 
     	}
     	 catch(SQLException e) {
@@ -623,7 +718,7 @@ public class database {
 	
 	public 	String[] Analyze_Count() {
 		if(!IsConnected()) this.reConnect();
-		String[] result=new String[10];
+		String[] result=new String[14];
     	try {
     		String iSql="SELECT COUNT(msisdn) FROM HSS_DATA ";
     		iRS=iStmt.executeQuery(iSql);
@@ -664,6 +759,36 @@ public class database {
     		iSql="SELECT COUNT(msisdn) FROM ENUMDNS_ONLY ";
     		iRS=iStmt.executeQuery(iSql);
     		result[9] =iRS.getString(1);
+    		
+    		iSql="SELECT COUNT(msisdn) FROM HSS_DATA WHERE YHDZD_ind='1' ";
+    		iRS=iStmt.executeQuery(iSql);
+    		result[10] =iRS.getString(1);   		
+    		
+    		iSql="SELECT COUNT(msisdn) FROM HSS_DATA WHERE YHDZD_ind='2' ";
+    		iRS=iStmt.executeQuery(iSql);
+    		result[11] =iRS.getString(1);
+    		
+    		iSql="SELECT cap_set,COUNT(cap_set) FROM HSS_DATA GROUP BY cap_set ";
+    		iRS=iStmt.executeQuery(iSql);
+    		while(iRS.next()) {
+    			if(result[12]==null) {
+    				result[12]=iRS.getString(1) + ":" +iRS.getString(2)+";" ; 
+    			}else {
+    				result[12]=result[12]+iRS.getString(1) + ":" +iRS.getString(2)+";" ; 
+    			}
+    			
+			}
+    		
+    		iSql="SELECT sifc,COUNT(sifc) FROM SIFC GROUP BY sifc ";
+    		iRS=iStmt.executeQuery(iSql);
+    		while(iRS.next()) {
+    			if(result[13]==null) {
+    				result[13]=iRS.getString(1) + ":" +iRS.getString(2)+";" ; 
+    			}else {
+    				result[13]=result[13]+iRS.getString(1) + ":" +iRS.getString(2)+";" ; 
+    			}
+			}
+    		
     		return result; 
     	}
     	 catch(SQLException e) {
@@ -671,6 +796,51 @@ public class database {
     		 return null;
     	 }
 	}
+	
+    public String GetCity(String Number)  {
+    	if(!IsConnected()) this.reConnect();
+    	for(int i=0;i<2;i++) {
+    	  try {
+    			String  iSql="select * FROM NumberList where `Number`=\'"+ Number.substring(0, 7-i)+"\';";
+    			iRS=iStmt.executeQuery(iSql);
+    			//System.out.print(iRS.get);
+    		  while(iRS.next()){
+				   return iRS.getString("City");
+    		  }
+    	       }
+    	  catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.exit(0);
+			}
+    	}
+		
+    	return "NoCity";
+    }
+    
+   
+    public String GetHSS(String gCity,String gNumber) throws SQLException {
+    	String TEMP="";
+    	int i=0;
+    	 String iSql1="select * FROM City where `City`=\'"+ gCity+"\';";
+    	 iRS=iStmt.executeQuery(iSql1);
+    	 while(iRS.next()) {
+    		
+    		if(iRS.getString("NumPrefix").equals(gNumber.substring(0, iRS.getString("NumPrefix").length()))){
+    			if(i<iRS.getString("NumPrefix").length()) {
+    		     	i=iRS.getString("NumPrefix").length();
+    		    	TEMP=iRS.getString("HSS");
+    			}
+    		}
+    	 }
+    		if(i>0) {
+    			return TEMP;
+    		}
+    		else {
+    			return "no match";
+    		} 
+    	
+    }
 	
 	
 	public static void main(String[] args) {

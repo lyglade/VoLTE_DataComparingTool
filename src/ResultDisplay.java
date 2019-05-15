@@ -39,7 +39,7 @@ public class ResultDisplay extends JPanel {
      * @param title    窗体的标题
      */
 
-    public  static void  openForm(String url,String title){
+    public  static void  openForm(String url,String title,MainBoard Mainb){
         UIUtils.setPreferredLookAndFeel();
         NativeInterface.open();
         SwingUtilities.invokeLater(new Runnable() {
@@ -87,7 +87,7 @@ public class ResultDisplay extends JPanel {
 					@Override
 					public void windowClosing(WindowEvent e) {
 						// TODO Auto-generated method stub
-						MainBoard.SetFrameEnable();
+						Mainb.SetFrameEnable();
 					}
 					
 					@Override
@@ -119,7 +119,7 @@ public class ResultDisplay extends JPanel {
 
     public static void main(String[] args) {
 
-        openForm(System.getProperty("user.dir")+ "\\WEB\\chartjs.html","ResultDisplay");
+//        openForm(System.getProperty("user.dir")+ "\\WEB\\chartjs.html","ResultDisplay");
 
     }
 

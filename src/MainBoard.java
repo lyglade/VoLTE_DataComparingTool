@@ -2,6 +2,7 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.io.File;
 import java.lang.StringIndexOutOfBoundsException;
+import java.lang.invoke.VolatileCallSite;
 
 import javax.swing.JFrame;
 
@@ -43,7 +44,7 @@ public class MainBoard {
 	String RUN_path;
 	private  JFrame frmVolte;
 	
-	public void SetFrameEnable() {
+	public  void SetFrameEnable() {
 		frmVolte.setEnabled(true);
 		
 	}
@@ -97,7 +98,11 @@ public class MainBoard {
 		frmVolte.setName("frame20");
 		frmVolte.setIconImage(Toolkit.getDefaultToolkit().getImage("E:\\Users\\HP\\git\\VoLTE_DataComparingTool\\src\\IMG\\logo2.gif"));
 		frmVolte.setTitle("VoLTE\u4E09\u65B9\u6570\u636E\u5BF9\u6BD4\u5DE5\u5177");
-		frmVolte.setBounds(100, 100, 528, 394);
+		
+		int screenWidth = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();  //获取屏幕宽度
+		int screenHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();//获取屏幕高度
+		
+		frmVolte.setBounds(screenWidth/2-260, screenHeight/2-200, 528, 394);
 		frmVolte.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmVolte.getContentPane().setLayout(null);
 		
@@ -243,6 +248,16 @@ public class MainBoard {
 		label_3.setFont(new Font("微软雅黑", Font.BOLD, 12));
 		label_3.setBounds(84, 220, 364, 15);
 		frmVolte.getContentPane().add(label_3);
+		
+		JButton button_4 = new JButton("\u5220\u9664\u6570\u636E");
+
+		button_4.setBounds(233, 35, 93, 23);
+		frmVolte.getContentPane().add(button_4);
+		
+		JButton button_5 = new JButton("\u5220\u9664\u6570\u636E");
+
+		button_5.setBounds(233, 105, 93, 23);
+		frmVolte.getContentPane().add(button_5);
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ArrayList<String> MSISDN=new ArrayList<String>();
@@ -301,9 +316,10 @@ public class MainBoard {
 					            if(qSQL.IsConnected()!=true) qSQL.reConnect();
 					            int APN_result=qSQL.insertAPNDATA(MSISDN);
 					            if(APN_result==write) {
-					            	String str1=Integer.toString(write);
-					            	lblNewLabel.setText("APN文件导入成功！共导入"+ str1	 +"行数据！");
+					            	String APN_input_total=String.valueOf(Integer.valueOf(qSQL.getConfig(6))+write);
+					            	lblNewLabel.setText("APN文件导入成功！共导入"+ APN_input_total	 +"行数据！");
 					            	qSQL.setConfig(2, lblNewLabel.getText());
+					            	qSQL.setConfig(6, APN_input_total);
 					            }else {
 					            	lblNewLabel.setText("APN文件导入失败，请检查数据文件！");
 					            }
@@ -364,16 +380,29 @@ public class MainBoard {
 					            isr = new InputStreamReader(fis);// InputStreamReader 是字节流通向字符流的桥梁,
 					            br = new BufferedReader(isr);// 从字符输入流中读取文件中的内容,封装了一个new
 					                                            // InputStreamReader的对象
-					            while ((str = br.readLine()) != null) {
-					                if(comboBox_1.getSelectedIndex()==0) {     //如果是华为DNS，进行数据处理
-					                	MSISDN.add(str.substring(7,18))  ;
-					                }
-					                else {              						//如果室中兴DNS，进行数据处理
+				                if(comboBox_1.getSelectedIndex()==0) {     //如果是华为DNS，进行数据处理
+				                	int pos1,pos2;
+						            while ((str = br.readLine()) != null) {
+						            	pos1=str.indexOf("sip:+861");
+						            	if(pos1!=-1) {                 //如果该行有特征码
+						            		pos2=str.indexOf("@", pos1);
+						            		if(pos2-pos1!=17) {       //如果该行有特征码，并且不是8610开头的座机
+							                	MSISDN.add(str.substring(pos1+7,pos2)) ;
+												write++;
+												if(write%100==0) System.out.println("write="+write);	
+						            		}
+						            	}
+						            }
+						        }
+				                else {              						//如果室中兴DNS，进行数据处理
+						            while ((str = br.readLine()) != null) {
 					                	MSISDN.add(str.substring(7,18)) ;
-					                }
-									write++;
-									if(write%100==0) System.out.println("write="+write);
-					            }
+					                
+										write++;
+										if(write%100==0) System.out.println("write="+write);
+						            }
+			                	}
+			                	
 					            if(qSQL.IsConnected()!=true) qSQL.reConnect();
 					            int APN_result=qSQL.insertENUMDNS_DATA(MSISDN);
 					            if(APN_result==write) {
@@ -660,10 +689,27 @@ public class MainBoard {
 			public void actionPerformed(ActionEvent arg0) {
 				qSQL.delHSS_DATA();
 				qSQL.setConfig(5, "0");
+				qSQL.setConfig(4, "尚未导入数据");
 				label_1.setText("删除成功！");
 			}
 		});
 		
+		button_4.addActionListener(new ActionListener() {           //删除hss的apn数据
+			public void actionPerformed(ActionEvent arg0) {
+				qSQL.delAPN_DATA();
+				qSQL.setConfig(6, "0");
+				qSQL.setConfig(2, "尚未导入数据");
+				lblNewLabel.setText("删除成功！");
+			}
+		});
+		
+		button_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				qSQL.delENUMDNS_DATA();
+				qSQL.setConfig(3, "尚未导入数据");
+				lblNewLabel.setText("删除成功！");
+			}
+		});
 		
 		button_3.addActionListener(new ActionListener() {           //导入配置文件
 			public void actionPerformed(ActionEvent arg0) {
@@ -671,16 +717,31 @@ public class MainBoard {
 				RUN_path=qSQL.getConfig(1);
 				if((RUN_path!="") &&( RUN_path!=null))  fd.setCurrentDirectory(new File(RUN_path));
 				if(fd.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
+					String tmp_String= fd.getSelectedFile().getPath();
+					qSQL.setConfig(1, tmp_String.substring(0, tmp_String.lastIndexOf("\\")));
+					System.out.print(tmp_String.lastIndexOf("\\"));
 					File f = fd.getSelectedFile();
 					if(f != null){
 						try {
 							List<Map<String,String>> list = ExcelTool.readExcel(f, 1);
-							qSQL.insertCity(list);	 
+							if(list==null) {
+								label_3.setText("文件错误！");
+								return;
+							}	 
+							qSQL.insertCity(list);
 							list.clear();	 
 							list = ExcelTool.readExcel(f, 2);
+							if(list==null) {
+								label_3.setText("文件错误！");
+								return;
+							}	 
 							qSQL.insertHSS(list);	
 							list.clear();	
 							list = ExcelTool.readExcel(f, 3);
+							if(list==null) {
+								label_3.setText("文件错误！");
+								return;
+							}	 
 							qSQL.insertNumlist(list);	
 							
 							label_3.setText("配置数据导入成功！");
@@ -688,13 +749,15 @@ public class MainBoard {
 						} catch (FileNotFoundException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
+							label_3.setText("配置文件未找到！");
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
+							label_3.setText("配置文件读取异常！");
 						} catch(SQLException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();	
-						}
+						} 
 						
 						
 					}
@@ -712,23 +775,43 @@ public class MainBoard {
 				if((RUN_path!="") &&( RUN_path!=null))  fd.setCurrentDirectory(new File(RUN_path));
 				fd.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				if(fd.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
+					qSQL.setConfig(1, fd.getSelectedFile().getPath());
 					File f = new File(fd.getSelectedFile().getPath()+"\\setup.xlsx");
 					if(f.exists()) {
 						JDialog dialog=new JDialog(frmVolte,"该文件已经存在，是否覆盖?",true);
-						dialog.setBounds(400, 200, 350, 80);//设置弹出对话框的位置和大小
-						dialog.setLayout(new FlowLayout());//设置弹出对话框的布局为流式布局
+						dialog.setBounds(frmVolte.getX()+150, frmVolte.getY()+100, 350, 80);//设置弹出对话框的位置和大小
+						dialog.getContentPane().setLayout(new FlowLayout());//设置弹出对话框的布局为流式布局
 						JLabel lab = new JLabel();//创建lab标签填写提示内容
 						lab.setText("文件已存在，是否覆盖？");
 						JButton okBut = new JButton("确定");//创建确定按钮
 						JButton noBut=new JButton("取消"); //创建取消按钮
-						dialog.add(lab);
-						dialog.add(okBut);
-						dialog.add(noBut);
+						dialog.getContentPane().add(lab);
+						dialog.getContentPane().add(okBut);
+						dialog.getContentPane().add(noBut);
 
 				        // 确定按钮监听器
 				        okBut.addActionListener(new ActionListener() {
 				            public void actionPerformed(ActionEvent e) {
 				            	dialog.setVisible(false);
+				            	if(!f.delete()) {
+				            		label_3.setText("原有配置文件删除失败，未成功导出!");
+				            		return;
+				            	}
+				            	try {
+									f.createNewFile();
+					            	List<Map<String,String>> list = new ArrayList<Map<String,String>>();
+					            	list=qSQL.GetCity();
+					            	ExcelTool.writeExcel(list, 1, f);
+					            	list=qSQL.GetHSS();
+					            	ExcelTool.writeExcel(list, 2, f);
+					            	list=qSQL.GetNumlist();
+					            	ExcelTool.writeExcel(list, 3, f);
+					            	label_3.setText("成功导出!");
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+
 				            	
 				                
 				            }
@@ -744,10 +827,22 @@ public class MainBoard {
 				        });
 						
 						dialog.setVisible(true);
+					}else {
+		            	try {
+							f.createNewFile();
+			            	List<Map<String,String>> list = new ArrayList<Map<String,String>>();
+			            	list=qSQL.GetCity();
+			            	ExcelTool.writeExcel(list, 1, f);
+			            	list=qSQL.GetHSS();
+			            	ExcelTool.writeExcel(list, 2, f);
+			            	list=qSQL.GetNumlist();
+			            	ExcelTool.writeExcel(list, 3, f);
+			            	label_3.setText("成功导出!");
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
-//					if(f != null){
-//						
-//					}
 					
 				}
 				
@@ -775,10 +870,45 @@ public class MainBoard {
 		cont = cont.replace("{%HSS_ONLY%}", ResultCount[7]);
 		cont = cont.replace("{%APN_ONLY%}", ResultCount[8]);
 		cont = cont.replace("{%ENUMDNS_ONLY%}", ResultCount[9]);
+		int YHDZD_TOTAL=Integer.parseInt(ResultCount[10])+Integer.parseInt(ResultCount[11]);
+		cont = cont.replace("{%YHDZD_TOTAL%}",Integer.toString(YHDZD_TOTAL) );
+		cont = cont.replace("{%YHDZD_MASTER%}", ResultCount[10]);
+		cont = cont.replace("{%YHDZD_SLAVE%}", ResultCount[11]);
+		String MCAP_STR;
+		if(ResultCount[12].indexOf(";")<=ResultCount[12].length()) {    //判断是否为空
+			do{
+				MCAP_STR=ResultCount[12].substring(0,ResultCount[12].indexOf(";"));
+				cont = cont.replace("{%MCAP_STR%}", "                        <li style=\"display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;\">"+MCAP_STR+ "</li>\r\n{%MCAP_STR%}");
+				ResultCount[12]=ResultCount[12].substring(ResultCount[12].indexOf(";")+1);
+			}while(ResultCount[12].indexOf(";")!=-1);
+		}
+		cont = cont.replace("{%MCAP_STR%}", "");   //删除{%MCAP_STR%}标记
+		String SIFC_STR,SIFC,SIFC_COUNT;
+		if(ResultCount[13].indexOf(";")<=ResultCount[13].length()) {    //判断是否为空
+			do{
+				SIFC_STR=ResultCount[13].substring(0,ResultCount[13].indexOf(";"));
+				SIFC=SIFC_STR.substring(0,SIFC_STR.indexOf(":"));
+				SIFC_COUNT=SIFC_STR.substring(SIFC_STR.indexOf(":")+1);
+				cont = cont.replace("{%SIFC_STR%}", "                    <div class=\"col-lg-1\" style=\"background-color:#61A0A8;margin: 5px 10px ;height:75px,width:50px;border-radius: 5px;box-shadow:0px 3px 2px #aab2bd;\">\r\n" + 
+						"                        <div style=\"margin:0px 20px;padding:5px 0px 0px 0px;\">\r\n" + 
+						"                            <span style=\"color:black;font-size: 15px;font-weight: bold;\">"+SIFC+"</span>\r\n" + 
+						"                        </div>                            \r\n" + 
+						"                        <div style=\"color:white;font-size:28px;margin:0px 15px;\">"+SIFC_COUNT+"</div>\r\n" + 
+						"                    </div>\r\n{%SIFC_STR%}");
+				
+				
+				cont = cont.replace("{%SIFC_STR1%}", "                        <li style=\"display: inline-block;color: black;font-weight: bold;font-size:18px;width: 150px;\">"+SIFC_STR+ "</li>\r\n{%SIFC_STR1%}");
+				ResultCount[13]=ResultCount[13].substring(ResultCount[13].indexOf(";")+1);
+			}while(ResultCount[13].indexOf(";")!=-1);
+			cont = cont.replace("{%SIFC_STR%}", "");   //删除{%MCAP_STR%}标记
+			cont = cont.replace("{%SIFC_STR1%}", "");   //删除{%MCAP_STR%}标记
+		}
+		
+		
 		File f=new File(System.getProperty("user.dir")+ "\\WEB\\chartjs.html");
 		write(cont, f);
 		
-		ResultDisplay.openForm(System.getProperty("user.dir")+ "\\WEB\\chartjs.html", "ResultDisplay");
+		ResultDisplay.openForm(System.getProperty("user.dir")+ "\\WEB\\chartjs.html", "ResultDisplay",this);
 //		int HSS_DATA_COUNT=qSQL.CountItems("HSS_DATA");
 //		int ALL_FIX_COUNT=qSQL.CountItems("ALL_FIX");
 		

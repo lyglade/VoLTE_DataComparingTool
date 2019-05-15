@@ -14,9 +14,12 @@ import java.util.Map;
 import org.apache.poi.common.*;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.sl.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -40,71 +43,120 @@ public class ExcelTool {
 	        dataMap.put("Phone", "Phone");
 	        List<Map> list=new ArrayList<Map>();
 	        list.add(dataMap);
-	        writeExcel(list, 3, "D:/writeExcel.xlsx");
-
+//	        writeExcel(list, 3, "D:/writeExcel.xlsx");
 
 	}
-	 public static void writeExcel(List<Map> dataList, int cloumnCount,String finalXlsxPath){
-	        OutputStream out = null;
-	        try {
-	            // 获取总列数
-	            int columnNumCount = cloumnCount;
-	            // 读取Excel文档
-	            File finalXlsxFile = new File(finalXlsxPath);
-	            Workbook workBook = getWorkbok(finalXlsxFile);
-	            // sheet 对应一个工作页
-	            Sheet sheet = workBook.getSheetAt(0);
-	            /**
-	             * 删除原有数据，除了属性列
-	             */
-	            int rowNumber = sheet.getLastRowNum();    // 第一行从0开始算
-	            System.out.println("原始数据总行数，除属性列：" + rowNumber);
-	            for (int i = 1; i <= rowNumber; i++) {
-	                Row row = sheet.getRow(i);
-	                sheet.removeRow(row);
-	            }
-	            // 创建文件输出流，输出电子表格：这个必须有，否则你在sheet上做的任何操作都不会有效
-	            out =  new FileOutputStream(finalXlsxPath);
-	            workBook.write(out);
-	            /**
-	             * 往Excel中写新数据
-	             */
-	            for (int j = 0; j < dataList.size(); j++) {
-	                // 创建一行：从第二行开始，跳过属性列
-	                Row row = sheet.createRow(j + 1);
-	                // 得到要插入的每一条记录
-	                Map dataMap = dataList.get(j);
-	                String name = dataMap.get("BankName").toString();
-	                String address = dataMap.get("Addr").toString();
-	                String phone = dataMap.get("Phone").toString();
-	                for (int k = 0; k <= columnNumCount; k++) {
-	                // 在一行内循环
-	                Cell first = row.createCell(0);
-	                first.setCellValue(name);
-	        
-	                Cell second = row.createCell(1);
-	                second.setCellValue(address);
-	        
-	                Cell third = row.createCell(2);
-	                third.setCellValue(phone);
-	                }
-	            }
-	            // 创建文件输出流，准备输出电子表格：这个必须有，否则你在sheet上做的任何操作都不会有效
-	            out =  new FileOutputStream(finalXlsxPath);
-	            workBook.write(out);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        } finally{
-	            try {
-	                if(out != null){
-	                    out.flush();
-	                    out.close();
-	                }
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	            }
-	        }
-	        System.out.println("数据导出成功");
+	
+	 public static void writeExcel(List<Map<String,String>> list, int WriteInd , File file) throws FileNotFoundException, IOException{
+        //创建workbook
+		 Workbook XWorkbook=null;
+		 FileInputStream fileInputStream=null;
+		 boolean FileInputInd=false;
+		 if(file.length()==0) {
+			 XWorkbook = new XSSFWorkbook(); 
+		 }else {
+			 fileInputStream=new FileInputStream(file);
+			 XWorkbook = new XSSFWorkbook(fileInputStream);  //如果文件不为空，则读入文件
+			 FileInputInd=true;
+		 }
+		 
+        //新建文件
+        FileOutputStream fileOutputStream = new FileOutputStream(file.getPath());
+        if(WriteInd==1) {
+            XWorkbook.createSheet("City");
+            Sheet sheet=XWorkbook.getSheet("City");
+            Row row = sheet.createRow(0);
+            Cell cell1=row.createCell(0);
+            cell1.setCellValue("City");
+            Cell cell2=row.createCell(1);
+            cell2.setCellValue("NumPrefix");
+            Cell cell3=row.createCell(2);
+            cell3.setCellValue("HSS");
+            
+            for (int i= 0; i < list.size(); i++) {
+                // 创建一行：从第二行开始，跳过属性列
+                row = sheet.createRow(i + 1);
+                Map<String,String>  dataMap = list.get(i);
+                cell1 = row.createCell(0);
+                cell1.setCellValue(dataMap.get("City").toString());
+        
+                cell2 = row.createCell(1);
+                cell2.setCellValue(dataMap.get("NumPrefix").toString());
+        
+                cell3 = row.createCell(2);
+                cell3.setCellValue(dataMap.get("HSS").toString());
+            }
+        }else if(WriteInd==2) {
+            XWorkbook.createSheet("HSS");
+            Sheet sheet=XWorkbook.getSheet("HSS");
+            Row row = sheet.createRow(0);
+            Cell cell1=row.createCell(0);
+            cell1.setCellValue("HSS");
+            Cell cell2=row.createCell(1);
+            cell2.setCellValue("Manufacturer");
+            Cell cell3=row.createCell(2);
+            cell3.setCellValue("IP");
+            Cell cell4=row.createCell(3);
+            cell4.setCellValue("USER");
+            Cell cell5=row.createCell(4);
+            cell5.setCellValue("PASSWD");
+            Cell cell6=row.createCell(5);
+            cell6.setCellValue("PORT");
+            Cell cell7=row.createCell(6);
+            cell7.setCellValue("PROMPT");
+            for (int i= 0; i < list.size(); i++) {
+                // 创建一行：从第二行开始，跳过属性列
+                row = sheet.createRow(i + 1);
+                Map<String,String> dataMap = list.get(i);
+                cell1 = row.createCell(0);
+                cell1.setCellValue(dataMap.get("HSS").toString());
+                cell2 = row.createCell(1);
+                cell2.setCellValue(dataMap.get("Manufacturer").toString());
+                cell3 = row.createCell(2);
+                cell3.setCellValue(dataMap.get("IP").toString());
+                cell4= row.createCell(3);
+                cell4.setCellValue(dataMap.get("USER").toString());
+                cell5 = row.createCell(4);
+                cell5.setCellValue(dataMap.get("PASSWD").toString());
+                cell6 = row.createCell(5);
+                cell6.setCellValue(dataMap.get("PORT").toString());
+                cell7 = row.createCell(6);
+                cell7.setCellValue(dataMap.get("PROMPT").toString());
+            }	
+        }else {
+            XWorkbook.createSheet("Numlist");
+            Sheet sheet=XWorkbook.getSheet("Numlist");
+            Row row = sheet.createRow(0);
+            Cell cell1=row.createCell(0);
+            cell1.setCellValue("Province");
+            Cell cell2=row.createCell(1);
+            cell2.setCellValue("City");
+            Cell cell3=row.createCell(2);
+            cell3.setCellValue("Areacode");
+            Cell cell4=row.createCell(3);
+            cell4.setCellValue("Number");
+            
+            for (int i= 0; i < list.size(); i++) {
+                // 创建一行：从第二行开始，跳过属性列
+                row = sheet.createRow(i + 1);
+                Map<String,String>  dataMap = list.get(i);
+                cell1 = row.createCell(0);
+                cell1.setCellValue(dataMap.get("Province").toString());
+                cell2 = row.createCell(1);
+                cell2.setCellValue(dataMap.get("City").toString());
+                cell3 = row.createCell(2);
+                cell3.setCellValue(dataMap.get("AreaCode").toString());
+                cell4= row.createCell(3);
+                cell4.setCellValue(dataMap.get("Number").toString());
+            }
+        }
+        	
+        XWorkbook.write(fileOutputStream);
+        XWorkbook.close();
+        fileOutputStream.flush();
+        fileOutputStream.close();
+        if(FileInputInd==true) fileInputStream.close();
+        
 	    }
 
 	    /**
@@ -127,7 +179,7 @@ public class ExcelTool {
 	    
 	    
 	  //读取excel
-	    public static List<Map<String,String>> readExcel(File file,int ReadInd)throws IOException,FileNotFoundException  {
+	    public static List<Map<String,String>> readExcel(File file,int ReadInd)throws IOException,FileNotFoundException {
 	    	String filePath=file.getAbsolutePath();
 	        Workbook wb = null;
 	        Sheet sheet = null;
@@ -154,6 +206,10 @@ public class ExcelTool {
 	            if(ReadInd==1) {
 		          //获取 City sheet
 		            sheet=wb.getSheet("City");
+		            if(sheet==null) {
+		            	is.close();
+		            	return null;
+		            }
 		            //获取最大行数
 		            int rownum = sheet.getPhysicalNumberOfRows();
 		            //获取第一行
@@ -178,6 +234,10 @@ public class ExcelTool {
 	            }else if(ReadInd==2) {
 	  	          //获取 HSS sheet
 		            sheet=wb.getSheet("HSS");
+		            if(sheet==null) {
+		            	is.close();
+		            	return null;
+		            }
 		            //获取最大行数
 		            int rownum = sheet.getPhysicalNumberOfRows();
 		            //获取第一行
@@ -202,6 +262,10 @@ public class ExcelTool {
 	            }else if(ReadInd==3){
 	  	          //获取 City sheet
 		            sheet=wb.getSheet("Numlist");
+		            if(sheet==null) {
+		            	is.close();
+		            	return null;
+		            }
 		            //获取最大行数
 		            int rownum = sheet.getPhysicalNumberOfRows();
 		            //获取第一行
@@ -224,10 +288,11 @@ public class ExcelTool {
 		                list.add(map);
 		            }
 	            }else {
+	            	is.close();
 	            	return null;
 	            }
 
-
+	            is.close();
 	        }
 			return list;
 	    }
