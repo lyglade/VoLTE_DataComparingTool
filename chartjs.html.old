@@ -17,8 +17,17 @@
   <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!--external css-->
   <link href="lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
-  
+  <!-- Custom styles for this template -->
   <link href="css/style.css" rel="stylesheet">
+<!--   <link href="css/style-responsive.css" rel="stylesheet"> -->
+
+  <!-- =======================================================
+    Template Name: Dashio
+    Template URL: https://templatemag.com/dashio-bootstrap-admin-template/
+    Author: TemplateMag.com
+    License: https://templatemag.com/license/
+  ======================================================= -->
+
 
 </head>
 
@@ -42,7 +51,7 @@
             </div>
             <div class="col-lg-4">
               <div class="content-panel">
-                <h4 style="text-align: center;color: black;font-weight: bold;">APN数据对比分析</h4>
+                <h4 style="text-align: center;color: black;font-weight: bold;">AS数据对比分析</h4>
                 <div class="panel-body text-center">
                   <!-- <canvas id="pie2as" height="350" width="450"></canvas> -->
                   <div style="width:450px;height:350px;" id="pie2as"></div>
@@ -77,43 +86,43 @@
                   <thead>
                     <tr>
                       <th colspan="4" style="text-align: center;">HSS</th>
-                      <th colspan="4" style="text-align: center;">APN</th>
+                      <th colspan="4" style="text-align: center;">AS</th>
                       <th colspan="4" style="text-align: center;">DNS</th>
                     </tr>
                     <tr>
-                      <th colspan="4" style="text-align: center;">总数:{%HSS_DATA%}</th>
-                      <th colspan="4" style="text-align: center;">总数:{%APN_DATA%}</th>
-                      <th colspan="4" style="text-align: center;">总数:{%ENUMDNS_DATA%}</th>
+                      <th colspan="4" style="text-align: center;">总数:9291</th>
+                      <th colspan="4" style="text-align: center;">总数:19532</th>
+                      <th colspan="4" style="text-align: center;">总数:19576</th>
                     </tr>
                   </thead>
                   <tbody >
                     <tr>
                       <td>全部匹配</td>
-                      <td>APN有DNS无</td>
-                      <td>DNS有APN无</td>
-                      <td>APN/DNS皆无</td>
+                      <td>AS有DNS无</td>
+                      <td>DNS有AS无</td>
+                      <td>AS/DNS皆无</td>
                       <td>全部匹配</td>
                       <td>HSS有DNS无</td>
                       <td>DNS有HSS无</td>
                       <td>HSS/DNS暂无</td>
                       <td>全部匹配</td>
-                      <td>APN有HSS无</td>
-                      <td>HSS有APN无</td>
-                      <td>APN/HSS皆无</td>
+                      <td>AS有HSS无</td>
+                      <td>HSS有AS无</td>
+                      <td>AS/HSS皆无</td>
                     </tr>
                     <tr>
-                      <td  class="numeric">{%ALL_FIX%}</td>
-                      <td  class="numeric">{%HSS_APN_FIX%}</td>
-                      <td  class="numeric">{%HSS_ENUMDNS_FIX%}</td>
-                      <td  class="numeric">{%HSS_ONLY%}</td>
-                      <td  class="numeric">{%ALL_FIX%}</td>
-                      <td  class="numeric">{%HSS_APN_FIX%}</td>
-                      <td  class="numeric">{%APN_ENUMDNS_FIX%}</td>
-                      <td  class="numeric">{%APN_ONLY%}</td>
-                      <td  class="numeric">{%ALL_FIX%}</td>
-                      <td  class="numeric">{%APN_ENUMDNS_FIX%}</td>
-                      <td  class="numeric">{%HSS_ENUMDNS_FIX%}</td>
-                      <td  class="numeric">{%ENUMDNS_ONLY%}</td>
+                      <td  class="numeric">1</td>
+                      <td  class="numeric">2</td>
+                      <td  class="numeric">3</td>
+                      <td  class="numeric">4</td>
+                      <td  class="numeric">5</td>
+                      <td  class="numeric">6</td>
+                      <td  class="numeric">7</td>
+                      <td  class="numeric">8</td>
+                      <td  class="numeric">9</td>
+                      <td  class="numeric">10</td>
+                      <td  class="numeric">11</td>
+                      <td  class="numeric">12</td>
 
                     </tr>
 
@@ -182,7 +191,7 @@
                       //             return res;
                       //     })()
                       // data:[{name:'aa'},{name:'bb'},{name:'cc'},{name:'dd'}],
-                      data:['全部匹配用户','APN有DNS无','DNS有APN无','APN/DNS皆无']
+                      data:['全部匹配用户','AS有DNS无','DNS有AS无','AS/DNS皆无']
 
                   },
               series : [
@@ -191,7 +200,7 @@
                       type:'pie',
                       radius : '80%',
                       center: ['50%', '45%'],
-                      data:[{name:'全部匹配用户',value:{%ALL_FIX%}},{name:'APN有DNS无',value:{%HSS_APN_FIX%}},{name:'DNS有APN无',value:{%HSS_ENUMDNS_FIX%}},{name:'APN/DNS皆无',value:{%HSS_ONLY%}},],
+                      data:[{name:'全部匹配用户',value:20},{name:'AS有DNS无',value:30},{name:'DNS有AS无',value:40},{name:'AS/DNS皆无',value:50},],
                       label: {
                       normal: {
                           show: true,
@@ -252,7 +261,7 @@
                 type:'pie',
                 radius : '80%',
                 center: ['50%', '45%'],
-                data:[{name:'全部匹配用户',value:{%ALL_FIX%}},{name:'HSS有DNS无',value:{%HSS_APN_FIX%}},{name:'DNS有HSS无',value:{%APN_ENUMDNS_FIX%}},{name:'HSS/DNS皆无',value:{%APN_ONLY%}},],
+                data:[{name:'全部匹配用户',value:20},{name:'HSS有DNS无',value:30},{name:'DNS有HSS无',value:40},{name:'HSS/DNS皆无',value:50},],
                 label: {
                 normal: {
                     show: true,
@@ -306,7 +315,7 @@
             //             return res;
             //     })()
             // data:[{name:'aa'},{name:'bb'},{name:'cc'},{name:'dd'}],
-            data:['全部匹配用户','APN有HSS无','HSS有APN无','APN/HSS皆无']
+            data:['全部匹配用户','AS有HSS无','HSS有AS无','AS/HSS皆无']
 
         },
         series : [
@@ -315,7 +324,7 @@
                 type:'pie',
                 radius : '80%',
                 center: ['50%', '45%'],
-                data:[{name:'全部匹配用户',value:{%ALL_FIX%}},{name:'APN有HSS无',value:{%APN_ENUMDNS_FIX%}},{name:'HSS有APN无',value:{%HSS_ENUMDNS_FIX%}},{name:'APN/HSS皆无',value:{%ENUMDNS_ONLY%}},],
+                data:[{name:'全部匹配用户',value:20},{name:'AS有HSS无',value:30},{name:'HSS有AS无',value:40},{name:'AS/HSS皆无',value:50},],
                 label: {
                 normal: {
                     show: true,

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html >
 
 <head>
   <meta charset="utf-8">
@@ -17,8 +17,17 @@
   <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!--external css-->
   <link href="lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
-  
+  <!-- Custom styles for this template -->
   <link href="css/style.css" rel="stylesheet">
+<!--   <link href="css/style-responsive.css" rel="stylesheet"> -->
+
+  <!-- =======================================================
+    Template Name: Dashio
+    Template URL: https://templatemag.com/dashio-bootstrap-admin-template/
+    Author: TemplateMag.com
+    License: https://templatemag.com/license/
+  ======================================================= -->
+
 
 </head>
 
@@ -31,36 +40,37 @@
 <!--         <div class="tab-pane" id="chartjs"> -->
 
           <div class="row mt">
-            <div class="col-lg-4">
+            <div class="col-sm-4 col-md-4 col-lg-4" >
               <div class="content-panel">
                 <h4 style="text-align: center;color: black;font-weight: bold;">HSS数据对比分析</h4>
                 <div class="panel-body text-center">
                   <!-- <canvas id="pie1hss" height="350" width="450"></canvas> 使用canvas无法显示tooltip-->
-                  <div style="width:450px;height:350px;" id="pie1hss"></div>
+                  <div style="height:280px;" id="pie1hss"></div>
                 </div>
               </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-sm-4 col-md-4 col-lg-4">
               <div class="content-panel">
                 <h4 style="text-align: center;color: black;font-weight: bold;">APN数据对比分析</h4>
                 <div class="panel-body text-center">
                   <!-- <canvas id="pie2as" height="350" width="450"></canvas> -->
-                  <div style="width:450px;height:350px;" id="pie2as"></div>
+                  <div style="height:280px;" id="pie2as"></div>
                 </div>
               </div>
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-sm-4 col-md-4 col-lg-4">
               <div class="content-panel">
                 <h4 style="text-align: center;color: black;font-weight: bold;">DNS数据对比分析</h4>
                 <div class="panel-body text-center">
                   <!-- <canvas id="pie3dns" height="350" width="450"></canvas> -->
-                  <div style="width:450px;height:350px;" id="pie3dns"></div>
+                  <div style="height:280px;" id="pie3dns"></div>
                 </div>
                 
               </div>
             </div>
           </div>
+        
 
         
           <!-- 以下为表格区 -->
@@ -69,11 +79,11 @@
       <section class="wrapper"> -->
         <!-- <h3><i class="fa fa-angle-right"></i> Responsive Table Examples</h3> -->
         <div class="row mt">
-          <div class="col-lg-12">
+          <div class="col-sm-12 col-md-12 col-lg-12">
             <div class="content-panel">
               <!-- <h4><i class="fa fa-angle-right"></i> Responsive Table</h4> -->
               <section id="unseen">
-                <table class="table table-bordered table-striped table-condensed" style="color: black;">
+                <table class="table table-bordered table-striped table-condensed" style="color: black;font-weight: bold;font-size: 15px;">
                   <thead>
                     <tr>
                       <th colspan="4" style="text-align: center;">HSS</th>
@@ -116,6 +126,21 @@
                       <td  class="numeric">{%ENUMDNS_ONLY%}</td>
 
                     </tr>
+                    <tr>
+                      <td ><a class="btn btn-success btn-sm" href="test.txt" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+                      <td ><a class="btn btn-success btn-sm" href="" download><strong>下载</strong></a></td>
+
+                    </tr>
 
                   </tbody>
                 </table>
@@ -124,6 +149,65 @@
             <!-- /content-panel -->
           </div>
           <!-- /col-lg-4 -->
+        </div>
+
+
+        <div class="row mt">
+            <div class="col-lg-12">
+                <div class="content-panel">
+                    <div class="row">
+                        <div class="col-lg-12">
+                    <h4 style="color: black;font-weight: bold;margin: 10px 30px;">一号双终端数据</h4>
+
+                    <div class="col-sm-4 col-md-4 col-lg-1" style="background-color:#61A0A8;margin: 5px 10px ;height:75px,width:50px;border-radius: 5px;box-shadow:0px 3px 2px #aab2bd;">
+                        <div style="margin:0px 20px;padding:5px 0px 0px 0px;">
+                            <span style="color:black;font-size: 15px;font-weight: bold;">总数</span>
+                        </div>                            
+                        <div style="color:white;font-size:28px;margin:0px 15px;">{%YHDZD_TOTAL%}</div>
+                    </div>
+
+                    <div class="col-sm-4 col-md-4 col-lg-1" style="background-color:#61A0A8;margin: 5px 10px ;height:75px,width:50px;border-radius: 5px;box-shadow:0px 3px 2px #aab2bd;">
+                        <div style="margin:0px 20px;padding:5px 0px 0px 0px;">
+                            <span style="color:black;font-size: 15px;font-weight: bold;">主卡</span>
+                        </div>                            
+                        <div style="color:white;font-size:28px;margin:0px 15px;">{%YHDZD_MASTER%}</div>
+                    </div>
+
+                    <div class="col-sm-4 col-md-4 col-lg-1" style="background-color:#61A0A8;margin: 5px 10px ;height:75px,width:50px;border-radius: 5px;box-shadow:0px 3px 2px #aab2bd;">
+                        <div style="margin:0px 20px;padding:5px 0px 0px 0px;">
+                            <span style="color:black;font-size: 15px;font-weight: bold;">副卡</span>
+                        </div>                            
+                        <div style="color:white;font-size:28px;margin:0px 15px;">{%YHDZD_SLAVE%}</div>
+                    </div>
+                </div>
+                </div>
+                    
+<!--                     <h4 style="display: inline-block;color: black;font-weight: bold;">总数：{%YHDZD_TOTAL%}</h4>
+                    <h4 style="display: inline-block;color: black;font-weight: bold;">主卡：{%YHDZD_MASTER%}</h4>
+                    <h4 style="display: inline-block;color: black;font-weight: bold;">副卡：{%YHDZD_SLAVE%}</h4> -->
+                    <div class="row">
+                    <div class="col-lg-12">
+                    <h4 style="color: black;font-weight: bold;">MCAP:</h4>
+                    <ul>
+{%MCAP_STR%}
+
+
+
+                    </ul>
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="col-lg-12">
+                    <h4 style="color: black;font-weight: bold;">SIFC:</h4>
+{%SIFC_STR%}
+<!--                     <ul>
+{%SIFC_STR1%}
+                    </ul> -->
+                </div>
+                </div>
+                </div>
+            </div>
+
         </div>
         <!-- /row -->
 <!--         </div> -->
@@ -143,7 +227,8 @@
   <!--script for this page-->
 <!--   <script src="lib/chart-master/Chart.js"></script>
   <script src="lib/chartjs-conf.js"></script>
- -->  <script src="lib/echarts/echarts.js"></script>
+ -->  
+    <script src="lib/echarts/echarts.js"></script>
           <script>
 
         var PieChartHss = echarts.init(document.getElementById('pie1hss'));
@@ -152,8 +237,7 @@
                 show:true,
                 trigger:'item',
                 // formatter: "{b} : {c}",
-                formatter : function(params){  
-               // console.log(params.data.name+':'+params.data.value);//打印params
+                formatter : function(params){               
                 return  params.data.name + ' : ' + params.data.value;
               }
            },
@@ -167,31 +251,24 @@
                 //     fontSize: 12
                 // },
                 align:'left',
-
-                     
-                      // x : 'center',
-                      // y : 'bottom',
-                      // data:(function(){
-                      //         var res = [];
-                      //         var len = result.length;
-                      //             for(var i=0,size=len;i<size;i++) {
-                      //              res.push({
-                      //                  name: result[i].city,
-                      //              });
-                      //             }
-                      //             return res;
-                      //     })()
-                      // data:[{name:'aa'},{name:'bb'},{name:'cc'},{name:'dd'}],
-                      data:['全部匹配用户','APN有DNS无','DNS有APN无','APN/DNS皆无']
+                data:['全部匹配用户','APN有DNS无','DNS有APN无','APN/DNS皆无']
 
                   },
               series : [
                   {
                       name:'2G流量',
                       type:'pie',
-                      radius : '80%',
+                      radius : '70%',
                       center: ['50%', '45%'],
-                      data:[{name:'全部匹配用户',value:{%ALL_FIX%}},{name:'APN有DNS无',value:{%HSS_APN_FIX%}},{name:'DNS有APN无',value:{%HSS_ENUMDNS_FIX%}},{name:'APN/DNS皆无',value:{%HSS_ONLY%}},],
+                      //data:[{name:'全部匹配用户',value:20},{name:'APN有DNS无',value:30},{name:'DNS有APN无',value:40},{name:'APN/DNS皆无',value:50},],
+                      data:[{name:'全部匹配用户',value:{%ALL_FIX%}},{name:'APN有DNS无',value:{%HSS_APN_FIX%}},{name:'DNS有APN无',value:{%HSS_ENUMDNS_FIX%}},{name:'APN/DNS皆无',value:{%HSS_ONLY%}}],
+                      itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },
                       label: {
                       normal: {
                           show: true,
@@ -201,19 +278,7 @@
                       emphasis: {
                           show: true
                       }
-                  },
-                      // data:(function(){
-                      //     var res = [];
-                      //     var len = result.length;
-                      //         for(var i=0,size=len;i<size;i++) {
-                      //          res.push({
-                      //              //通过把result进行遍历循环来获取数据并放入Echarts中
-                      //              name: result[i].city,
-                      //              value: result[i].flow2G
-                      //          });
-                      //         }
-                      //         return res;
-                      // })()
+                    },
 
                   }
 
@@ -232,17 +297,6 @@
             x : 'center',
             y : 'bottom',
             itemWidth:23,
-            // data:(function(){
-            //         var res = [];
-            //         var len = result.length;
-            //             for(var i=0,size=len;i<size;i++) {
-            //              res.push({
-            //                  name: result[i].city,
-            //              });
-            //             }
-            //             return res;
-            //     })()
-            // data:[{name:'aa'},{name:'bb'},{name:'cc'},{name:'dd'}],
             data:['全部匹配用户','HSS有DNS无','DNS有HSS无','HSS/DNS皆无']
 
         },
@@ -250,9 +304,17 @@
             {
                 name:'2G流量',
                 type:'pie',
-                radius : '80%',
+                radius : '70%',
                 center: ['50%', '45%'],
+                //data:[{name:'全部匹配用户',value:20},{name:'HSS有DNS无',value:30},{name:'DNS有HSS无',value:40},{name:'HSS/DNS皆无',value:50},],
                 data:[{name:'全部匹配用户',value:{%ALL_FIX%}},{name:'HSS有DNS无',value:{%HSS_APN_FIX%}},{name:'DNS有HSS无',value:{%APN_ENUMDNS_FIX%}},{name:'HSS/DNS皆无',value:{%APN_ONLY%}},],
+                itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                },                
                 label: {
                 normal: {
                     show: true,
@@ -263,19 +325,6 @@
                     show: true
                 }
             },
-                // data:(function(){
-                //     var res = [];
-                //     var len = result.length;
-                //         for(var i=0,size=len;i<size;i++) {
-                //          res.push({
-                //              //通过把result进行遍历循环来获取数据并放入Echarts中
-                //              name: result[i].city,
-                //              value: result[i].flow2G
-                //          });
-                //         }
-                //         return res;
-                // })()
-
             }
 
         ]
@@ -295,17 +344,6 @@
             x : 'center',
             y : 'bottom',
             itemWidth:23,
-            // data:(function(){
-            //         var res = [];
-            //         var len = result.length;
-            //             for(var i=0,size=len;i<size;i++) {
-            //              res.push({
-            //                  name: result[i].city,
-            //              });
-            //             }
-            //             return res;
-            //     })()
-            // data:[{name:'aa'},{name:'bb'},{name:'cc'},{name:'dd'}],
             data:['全部匹配用户','APN有HSS无','HSS有APN无','APN/HSS皆无']
 
         },
@@ -313,9 +351,17 @@
             {
                 name:'2G流量',
                 type:'pie',
-                radius : '80%',
+                radius : '70%',
                 center: ['50%', '45%'],
+                //data:[{name:'全部匹配用户',value:20},{name:'APN有HSS无',value:30},{name:'HSS有APN无',value:40},{name:'APN/HSS皆无',value:50},],
                 data:[{name:'全部匹配用户',value:{%ALL_FIX%}},{name:'APN有HSS无',value:{%APN_ENUMDNS_FIX%}},{name:'HSS有APN无',value:{%HSS_ENUMDNS_FIX%}},{name:'APN/HSS皆无',value:{%ENUMDNS_ONLY%}},],
+                itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                },                
                 label: {
                 normal: {
                     show: true,
@@ -326,18 +372,6 @@
                     show: true
                 }
             },
-                // data:(function(){
-                //     var res = [];
-                //     var len = result.length;
-                //         for(var i=0,size=len;i<size;i++) {
-                //          res.push({
-                //              //通过把result进行遍历循环来获取数据并放入Echarts中
-                //              name: result[i].city,
-                //              value: result[i].flow2G
-                //          });
-                //         }
-                //         return res;
-                // })()
 
             }
 
